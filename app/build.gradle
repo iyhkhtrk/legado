@@ -138,7 +138,7 @@ android {
 dependencies {
     compileOnly "com.android.tools.build:gradle:$agp_version"
     //noinspection GradleDependency,GradlePackageUpdate
-    coreLibraryDesugaring('com.android.tools:desugar_jdk_libs_nio:2.0.3')
+    coreLibraryDesugaring('com.android.tools:desugar_jdk_libs_nio:2.0.4')
     testImplementation('junit:junit:4.13.2')
     androidTestImplementation('androidx.test:runner:1.5.2')
     androidTestImplementation('androidx.test.ext:junit:1.1.5')
@@ -150,7 +150,7 @@ dependencies {
     //noinspection GradleDependency,DifferentStdlibGradleVersion
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
     //协程
-    def coroutines_version = '1.7.3'
+    def coroutines_version = '1.8.0'
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version")
 
@@ -160,21 +160,21 @@ dependencies {
     //androidX
     implementation('androidx.core:core-ktx:1.12.0')
     implementation('androidx.appcompat:appcompat:1.6.1')
-    implementation('androidx.activity:activity-ktx:1.8.1')
+    implementation('androidx.activity:activity-ktx:1.8.2')
     implementation('androidx.fragment:fragment-ktx:1.6.2')
     implementation('androidx.preference:preference-ktx:1.2.1')
     implementation('androidx.constraintlayout:constraintlayout:2.1.4')
     implementation('androidx.swiperefreshlayout:swiperefreshlayout:1.1.0')
     implementation('androidx.viewpager2:viewpager2:1.0.0')
-    implementation('androidx.webkit:webkit:1.9.0')
+    implementation('androidx.webkit:webkit:1.10.0')
 
     //google
-    implementation('com.google.android.material:material:1.10.0')
+    implementation('com.google.android.material:material:1.11.0')
     implementation('com.google.android.flexbox:flexbox:3.0.0')
     implementation('com.google.code.gson:gson:2.10.1')
 
     //lifecycle
-    def lifecycle_version = '2.6.2'
+    def lifecycle_version = '2.7.0'
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-service:$lifecycle_version")
 
@@ -203,8 +203,8 @@ dependencies {
     implementation('com.github.michaellee123:LiveEventBus:1.8.14')
 
     //规则相关
-    implementation('org.jsoup:jsoup:1.16.2')
-    implementation('com.jayway.jsonpath:json-path:2.8.0')
+    implementation('org.jsoup:jsoup:1.17.2')
+    implementation('com.jayway.jsonpath:json-path:2.9.0')
     implementation('cn.wanghaomiao:JsoupXpath:2.5.3')
     implementation(project(path: ':modules:book'))
 
@@ -212,9 +212,9 @@ dependencies {
     implementation(project(path: ':modules:rhino1.7.3'))
 
     //网络
-    implementation('com.squareup.okhttp3:okhttp:4.11.0')
+    implementation('com.squareup.okhttp3:okhttp:4.12.0')
     implementation(fileTree(dir: 'cronetlib', include: ['*.jar', '*.aar']))
-    implementation 'com.google.protobuf:protobuf-javalite:3.24.3'
+    implementation 'com.google.protobuf:protobuf-javalite:3.25.3'
 
     //Glide
     def glideVersion = "4.16.0"
@@ -234,7 +234,7 @@ dependencies {
 
     //二维码
     //noinspection GradleDependency
-    implementation('com.github.jenly1314:zxing-lite:3.0.1')
+    implementation('com.github.jenly1314:zxing-lite:3.1.0')
 
     //颜色选择
     implementation('com.jaredrummler:colorpicker:1.1.0')
@@ -257,12 +257,12 @@ dependencies {
 
     //加解密类库,有些书源使用
     //noinspection GradleDependency,GradlePackageUpdate
-    implementation('cn.hutool:hutool-crypto:5.8.25')
+    implementation('cn.hutool:hutool-crypto:5.8.26')
 
     //firebase, 崩溃统计和性能统计
-    implementation platform('com.google.firebase:firebase-bom:32.5.0')
-    implementation 'com.google.firebase:firebase-analytics:21.5.0'
-    implementation 'com.google.firebase:firebase-perf:20.5.1'
+    implementation platform('com.google.firebase:firebase-bom:32.7.2')
+    implementation 'com.google.firebase:firebase-analytics:21.5.1'
+    implementation 'com.google.firebase:firebase-perf:20.5.2'
 
     //LeakCanary, 内存泄露检测
     //debugImplementation('com.squareup.leakcanary:leakcanary-android:2.7')
