@@ -17,6 +17,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+      time: "2:46"
     registries: "*"
     groups:
       maven-dependencies:
