@@ -87,7 +87,7 @@ jobs:
 
       - name: Release
         if: ${{ env.product == 'app' }}
-        uses: softprops/action-gh-release@3198ee18f814cdf787321b4a32a26ddbf37acc52
+        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564
         with:
           name: legado_app_${{ env.VERSION }}
           tag_name: ${{ env.VERSION }}
