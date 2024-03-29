@@ -3,13 +3,13 @@ name: Update Cronet
 on:
   schedule:
   # 周一北京时间9点
-    - cron: 0 1 * * 1
+    - cron: 0 4 * * *
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'gedoor/legado' }}
+    #if: ${{ github.repository == 'gedoor/legado' }}
     steps:
       - uses: actions/checkout@v4
 
