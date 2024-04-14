@@ -5,6 +5,7 @@ import android.webkit.WebSettings
 import androidx.annotation.Keep
 import cn.hutool.core.codec.Base64
 import cn.hutool.core.util.HexUtil
+import com.getcapacitor.plugin.http.Http
 import io.legado.app.constant.AppConst
 import io.legado.app.constant.AppConst.dateFormat
 import io.legado.app.constant.AppLog
@@ -455,6 +456,10 @@ interface JsExtensions : JsEncodeUtils {
     /* utf8 编码为hexString */
     fun hexEncodeToString(utf8: String): String? {
         return HexUtil.encodeHexStr(utf8)
+    }
+    
+    fun signParams(str: String): String {
+        return Http.signParams(str)
     }
 
     /**
