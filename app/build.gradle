@@ -72,6 +72,18 @@ android {
         buildConfig true
         viewBinding true
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["libs"]
+        }
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include "arm64-v8a"
+        }
+    }
     buildTypes {
         release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
