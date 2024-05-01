@@ -9,7 +9,7 @@ max_offset=$2
 [ -z $2 ] && max_offset=3
 [ -z $GITHUB_ENV ] && echo "Error: Unexpected github workflow environment" && exit
 
-offset=0
+offset=1
 
 function fetch_version() {
     # 获取最新cronet版本
