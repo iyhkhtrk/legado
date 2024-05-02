@@ -7,10 +7,10 @@ appcompat = "1.6.1"
 colorpicker = "1.1.0"
 commonsText = "1.12.0"
 constraintlayout = "2.1.4"
-core = "1.13.0"
+core = "1.13.1"
 firebaseBom = "32.8.1"
 flexbox = "3.0.0"
-fragment = "1.6.2"
+fragment = "1.7.0"
 
 #不要更新版本
 hutool = "5.8.25"
@@ -42,7 +42,7 @@ activity = "1.9.0"
 kotlinxSerialization = "1.6.3"
 swiperefreshlayout = "1.1.0"
 viewpager2 = "1.0.0"
-webkit = "1.10.0"
+webkit = "1.11.0"
 zxingLite = "3.1.1"
 
 
