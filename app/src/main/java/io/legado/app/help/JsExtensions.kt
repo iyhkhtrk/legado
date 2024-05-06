@@ -434,12 +434,20 @@ interface JsExtensions : JsEncodeUtils {
         return EncoderUtils.base64DecodeToByteArray(str, flags)
     }
 
-    fun base64Encode(str: String): String? {
-        return EncoderUtils.base64Encode(str, 2)
+    fun base64Encode(data: Any): String {
+        return when(data) {
+            is String -> EncoderUtils.base64Encode(data, 2)
+            is ByteArray -> EncoderUtils.base64Encode(data, 2)
+            else -> throw IllegalArgumentException("Unexpected input type")
+        }
     }
 
-    fun base64Encode(str: String, flags: Int): String? {
-        return EncoderUtils.base64Encode(str, flags)
+    fun base64Encode(data: Any, flags: Int): String {
+        return when(data) {
+            is String -> EncoderUtils.base64Encode(data, flags)
+            is ByteArray -> EncoderUtils.base64Encode(data, flags)
+            else -> throw IllegalArgumentException("Unexpected input type")
+        }
     }
 
     /* HexString 解码为字节数组 */
@@ -453,8 +461,12 @@ interface JsExtensions : JsEncodeUtils {
     }
 
     /* utf8 编码为hexString */
-    fun hexEncodeToString(utf8: String): String? {
-        return HexUtil.encodeHexStr(utf8)
+    fun hexEncodeToString(data: Any): String {
+        return when(data) {
+            is String -> HexUtil.encodeHexStr(data)
+            is ByteArray -> HexUtil.encodeHexStr(data)
+            else -> throw IllegalArgumentException("Unexpected input type")
+        }
     }
 
     /**
