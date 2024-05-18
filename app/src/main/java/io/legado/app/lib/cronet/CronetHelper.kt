@@ -31,7 +31,7 @@ val cronetEngine: ExperimentalCronetEngine? by lazy {
         }
         setStoragePath(appCtx.externalCacheDir?.absolutePath)//设置缓存路径
         enableHttpCache(HTTP_CACHE_DISK, (1024 * 1024 * 50).toLong())//设置50M的磁盘缓存
-        enableQuic(true)//设置支持http/3
+        enableQuic(false)//设置支持http/3
         enableHttp2(true)  //设置支持http/2
         enablePublicKeyPinningBypassForLocalTrustAnchors(true)
         enableBrotli(true)//Brotli压缩
