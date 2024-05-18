@@ -26,14 +26,26 @@ updates:
   - package-ecosystem: gradle
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     registries: "*"
+    groups:
+      maven-dependencies:
+        patterns:
+          - "*"
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    groups:
+      maven-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: npm
     directory: "modules/web"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    groups:
+      maven-dependencies:
+        patterns:
+          - "*"
