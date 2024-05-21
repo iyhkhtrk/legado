@@ -2,7 +2,7 @@
 
 kotlin = "1.9.24"
 ksp = "1.9.24-1.0.20"
-agp = "8.4.0"
+agp = "8.4.1"
 appcompat = "1.6.1"
 colorpicker = "1.1.0"
 commonsText = "1.12.0"
@@ -38,7 +38,7 @@ quickChineseTransfer = "0.2.13"
 room = "2.6.1"
 splitties = "3.0.0"
 
-activity = "1.8.2"
+activity = "1.9.0"
 kotlinxSerialization = "1.6.3"
 swiperefreshlayout = "1.1.0"
 viewpager2 = "1.1.0"
