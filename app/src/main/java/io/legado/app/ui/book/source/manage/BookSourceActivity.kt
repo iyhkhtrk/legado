@@ -52,7 +52,6 @@ import io.legado.app.utils.cnCompare
 import io.legado.app.utils.dpToPx
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.isAbsUrl
-import io.legado.app.utils.launch
 import io.legado.app.utils.observeEvent
 import io.legado.app.utils.sendToClip
 import io.legado.app.utils.setEdgeEffectColor
@@ -167,7 +166,7 @@ class BookSourceActivity : VMBaseActivity<ActivityBookSourceBinding, BookSourceV
     override fun onCompatOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_add_book_source -> startActivity<BookSourceEditActivity>()
-            R.id.menu_import_qr -> qrResult.launch()
+            R.id.menu_import_qr -> qrResult.launch(null)
             R.id.menu_group_manage -> showDialogFragment<GroupManageDialog>()
             R.id.menu_import_local -> importDoc.launch {
                 mode = HandleFileContract.FILE

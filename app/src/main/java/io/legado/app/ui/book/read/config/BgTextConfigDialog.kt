@@ -47,7 +47,6 @@ import io.legado.app.utils.externalFiles
 import io.legado.app.utils.getFile
 import io.legado.app.utils.inputStream
 import io.legado.app.utils.isContentScheme
-import io.legado.app.utils.launch
 import io.legado.app.utils.longToast
 import io.legado.app.utils.openOutputStream
 import io.legado.app.utils.outputStream
@@ -148,7 +147,7 @@ class BgTextConfigDialog : BaseDialogFragment(R.layout.dialog_read_bg_text) {
                 ivBg.setImageResource(R.drawable.ic_image)
                 ivBg.setColorFilter(primaryTextColor, PorterDuff.Mode.SRC_IN)
                 root.setOnClickListener {
-                    selectBgImage.launch()
+                    selectBgImage.launch(null)
                 }
             }
         }
