@@ -81,7 +81,7 @@ class ImportBookActivity : BaseImportBookActivity<ImportBookViewModel>(),
 
     override fun onCompatOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_select_folder -> selectFolder.launch()
+            R.id.menu_select_folder -> selectFolder.launch(null)
             R.id.menu_scan_folder -> scanFolder()
             R.id.menu_import_file_name -> alertImportFileName()
             R.id.menu_sort_name -> upSort(0)
@@ -151,7 +151,7 @@ class ImportBookActivity : BaseImportBookActivity<ImportBookViewModel>(),
             val lastPath = AppConfig.importBookPath
             if (lastPath.isNullOrBlank()) {
                 binding.tvEmptyMsg.visible()
-                selectFolder.launch()
+                selectFolder.launch(null)
             } else {
                 val rootUri = if (lastPath.isUri()) {
                     Uri.parse(lastPath)
@@ -164,7 +164,7 @@ class ImportBookActivity : BaseImportBookActivity<ImportBookViewModel>(),
                             val doc = DocumentFile.fromTreeUri(this, rootUri)
                             if (doc == null || doc.name.isNullOrEmpty()) {
                                 binding.tvEmptyMsg.visible()
-                                selectFolder.launch()
+                                selectFolder.launch(null)
                             } else {
                                 viewModel.subDocs.clear()
                                 viewModel.rootDoc = FileDoc.fromDocumentFile(doc)
@@ -172,7 +172,7 @@ class ImportBookActivity : BaseImportBookActivity<ImportBookViewModel>(),
                             }
                         }.onFailure {
                             binding.tvEmptyMsg.visible()
-                            selectFolder.launch()
+                            selectFolder.launch(null)
                         }
                     }
                     else -> initRootPath(rootUri.path!!)
@@ -193,7 +193,7 @@ class ImportBookActivity : BaseImportBookActivity<ImportBookViewModel>(),
                     upPath()
                 }.onFailure {
                     binding.tvEmptyMsg.visible()
-                    selectFolder.launch()
+                    selectFolder.launch(null)
                 }
             }
             .request()
