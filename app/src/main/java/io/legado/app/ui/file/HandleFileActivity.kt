@@ -18,7 +18,6 @@ import io.legado.app.lib.permission.Permissions
 import io.legado.app.lib.permission.PermissionsCompat
 import io.legado.app.utils.getJsonArray
 import io.legado.app.utils.isContentScheme
-import io.legado.app.utils.launch
 import io.legado.app.utils.toastOnUi
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 import java.io.File
@@ -86,7 +85,7 @@ class HandleFileActivity :
             items(selectList) { _, item, _ ->
                 when (item.value) {
                     HandleFileContract.DIR -> kotlin.runCatching {
-                        selectDocTree.launch()
+                        selectDocTree.launch(null)
                     }.onFailure {
                         AppLog.put(getString(R.string.open_sys_dir_picker_error), it)
                         toastOnUi(R.string.open_sys_dir_picker_error)
