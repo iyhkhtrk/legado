@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 
-import androidx.core.view.ViewCompat
 import kotlin.math.max
 
 class VerticalSeekBarWrapper @JvmOverloads constructor(
@@ -134,7 +133,7 @@ class VerticalSeekBarWrapper @JvmOverloads constructor(
         val seekBar = childSeekBar
 
         if (seekBar != null) {
-            val isLTR = ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_LTR
+            val isLTR = getLayoutDirection() == View.LAYOUT_DIRECTION_LTR
             val rotationAngle = seekBar.rotationAngle
             val seekBarMeasuredWidth = seekBar.measuredWidth
             val seekBarMeasuredHeight = seekBar.measuredHeight

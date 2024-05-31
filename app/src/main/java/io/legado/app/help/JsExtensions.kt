@@ -457,6 +457,10 @@ interface JsExtensions : JsEncodeUtils {
         return HexUtil.encodeHexStr(utf8)
     }
 
+    fun newByteArray(len: Int): ByteArray {
+        return ByteArray(len)
+    }
+
     /**
      * 格式化时间
      */
