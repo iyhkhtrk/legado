@@ -11,7 +11,6 @@ import io.legado.app.base.BaseActivity
 import io.legado.app.databinding.ActivityQrcodeCaptureBinding
 import io.legado.app.utils.QRCodeUtils
 import io.legado.app.utils.SelectImageContract
-import io.legado.app.utils.launch
 import io.legado.app.utils.readBytes
 import io.legado.app.utils.viewbindingdelegate.viewBinding
 
@@ -41,7 +40,7 @@ class QrCodeActivity : BaseActivity<ActivityQrcodeCaptureBinding>(), ScanResultC
 
     override fun onCompatOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_choose_from_gallery -> selectQrImage.launch()
+            R.id.action_choose_from_gallery -> selectQrImage.launch(null)
         }
         return super.onCompatOptionsItemSelected(item)
     }

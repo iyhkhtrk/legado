@@ -21,7 +21,6 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
@@ -200,7 +199,7 @@ class DragSelectTouchHelper(
             override fun run() {
                 if (mIsScrolling) {
                     scrollBy(mScrollDistance)
-                    ViewCompat.postOnAnimation(mRecyclerView!!, this)
+                    mRecyclerView!!.postOnAnimation(this)
                 }
             }
         }
@@ -702,7 +701,7 @@ class DragSelectTouchHelper(
         if (!mIsScrolling) {
             mIsScrolling = true
             mRecyclerView!!.removeCallbacks(mScrollRunnable)
-            ViewCompat.postOnAnimation(mRecyclerView!!, mScrollRunnable)
+            mRecyclerView!!.postOnAnimation(mScrollRunnable)
         }
     }
 
