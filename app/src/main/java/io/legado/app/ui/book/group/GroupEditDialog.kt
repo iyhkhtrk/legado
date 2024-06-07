@@ -70,7 +70,7 @@ class GroupEditDialog() : BaseDialogFragment(R.layout.dialog_book_group_edit) {
         }
         binding.run {
             ivCover.onClick {
-                selectImage.launch()
+                selectImage.launch(null)
             }
             btnCancel.onClick {
                 dismiss()
