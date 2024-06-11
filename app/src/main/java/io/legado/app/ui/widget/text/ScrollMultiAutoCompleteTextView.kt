@@ -10,7 +10,6 @@ import android.view.ViewConfiguration
 import android.view.animation.Interpolator
 import android.widget.OverScroller
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
-import androidx.core.view.ViewCompat
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -262,7 +261,7 @@ open class ScrollMultiAutoCompleteTextView @JvmOverloads constructor(
                 mReSchedulePostAnimationCallback = true
             } else {
                 removeCallbacks(this)
-                ViewCompat.postOnAnimation(this@ScrollMultiAutoCompleteTextView, this)
+                this@ScrollMultiAutoCompleteTextView.postOnAnimation(this)
             }
         }
     }

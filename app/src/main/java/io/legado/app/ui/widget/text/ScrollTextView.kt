@@ -11,7 +11,6 @@ import android.view.ViewConfiguration
 import android.view.animation.Interpolator
 import android.widget.OverScroller
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.view.ViewCompat
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -263,7 +262,7 @@ class ScrollTextView(context: Context, attrs: AttributeSet?) :
                 mReSchedulePostAnimationCallback = true
             } else {
                 removeCallbacks(this)
-                ViewCompat.postOnAnimation(this@ScrollTextView, this)
+                this@ScrollTextView.postOnAnimation(this)
             }
         }
     }
