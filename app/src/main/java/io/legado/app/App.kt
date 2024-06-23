@@ -109,6 +109,21 @@ class App : Application() {
         oldConfig = Configuration(newConfig)
     }
 
+    override fun getPackageName(): String {
+        try {
+            val stackTrace = Thread.currentThread().getStackTrace()
+            for (element in stackTrace) {
+                if ("org.chromium.base.BuildInfo".equals(element.getClassName())) {
+                    if ("getAll".equals(element.getMethodName())) {
+                        return "com.chrome"
+                    }
+                    break
+                }
+            }
+        } catch(e: Exception) {}
+        return super.getPackageName()
+    }
+
     /**
      * 尝试在安装了GMS的设备上(GMS或者MicroG)使用GMS内置的Conscrypt
      * 作为首选JCE提供程序，而使Okhttp在低版本Android上
