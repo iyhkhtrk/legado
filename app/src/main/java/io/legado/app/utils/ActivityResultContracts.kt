@@ -8,10 +8,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 
-fun ActivityResultLauncher<*>.launch() {
-    launch(null)
-}
-
 class SelectImageContract : ActivityResultContract<Int?, SelectImageContract.Result>() {
 
     var requestCode: Int? = null

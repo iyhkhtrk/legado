@@ -20,7 +20,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -292,7 +291,7 @@ class FastScroller : LinearLayout {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                if (event.x < mHandleView.x - ViewCompat.getPaddingStart(mHandleView)) {
+                if (event.x < mHandleView.x - mHandleView.getPaddingStart()) {
                     return false
                 }
                 if (!mScrollbar.isVisible) {

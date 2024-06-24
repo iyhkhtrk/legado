@@ -41,7 +41,6 @@ import io.legado.app.utils.GSON
 import io.legado.app.utils.applyTint
 import io.legado.app.utils.hideSoftInput
 import io.legado.app.utils.isAbsUrl
-import io.legado.app.utils.launch
 import io.legado.app.utils.readText
 import io.legado.app.utils.sendToClip
 import io.legado.app.utils.setEdgeEffectColor
@@ -254,7 +253,7 @@ class ReplaceRuleActivity : VMBaseActivity<ActivityReplaceRuleBinding, ReplaceRu
                 mode = HandleFileContract.FILE
                 allowExtensions = arrayOf("txt", "json")
             }
-            R.id.menu_import_qr -> qrCodeResult.launch()
+            R.id.menu_import_qr -> qrCodeResult.launch(null)
             R.id.menu_help -> showHelp("replaceRuleHelp")
             R.id.menu_group_null -> {
                 searchView.setQuery(getString(R.string.no_group), true)
