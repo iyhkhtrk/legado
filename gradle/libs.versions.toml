@@ -15,7 +15,7 @@ fragment = "1.8.0"
 #不要更新版本
 hutool = "5.8.25"
 
-libarchive = "1.0.3"
+libarchive = "1.1.0"
 lifecycle = "2.8.2"
 glide = "4.16.0"
 gson = "2.11.0"
@@ -62,7 +62,7 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 core-core = { module = "androidx.core:core", version.ref = "core" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core" }
 
-androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version = "3.6.0" }
 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -73,7 +73,7 @@ fragment-fragment = { module = "androidx.fragment:fragment", version.ref = "frag
 fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "fragment" }
 
-androidx-junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
+androidx-junit = { module = "androidx.test.ext:junit", version = "1.2.0" }
 
 hutool-crypto = { module = "cn.hutool:hutool-crypto", version.ref = "hutool" }
 
@@ -123,7 +123,7 @@ splitties-activities = { module = "com.louiscad.splitties:splitties-activities",
 splitties-systemservices = { module = "com.louiscad.splitties:splitties-systemservices", version.ref = "splitties" }
 splitties-views = { module = "com.louiscad.splitties:splitties-views", version.ref = "splitties" }
 
-androidx-runner = { module = "androidx.test:runner", version = "1.5.2" }
+androidx-runner = { module = "androidx.test:runner", version = "1.6.0" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
