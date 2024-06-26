@@ -33,7 +33,6 @@ import io.legado.app.ui.widget.recycler.ItemTouchCallback
 import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.ACache
 import io.legado.app.utils.applyTint
-import io.legado.app.utils.launch
 import io.legado.app.utils.readText
 import io.legado.app.utils.setLayout
 import io.legado.app.utils.showDialogFragment
@@ -150,7 +149,7 @@ class TxtTocRuleDialog() : BaseDialogFragment(R.layout.dialog_toc_regex),
                 allowExtensions = arrayOf("txt", "json")
             }
             R.id.menu_import_onLine -> showImportDialog()
-            R.id.menu_import_qr -> qrCodeResult.launch()
+            R.id.menu_import_qr -> qrCodeResult.launch(null)
             R.id.menu_import_default -> viewModel.importDefault()
             R.id.menu_help -> showHelp("txtTocRuleHelp")
         }

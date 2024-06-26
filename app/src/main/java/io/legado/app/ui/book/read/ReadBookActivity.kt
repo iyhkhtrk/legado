@@ -106,7 +106,6 @@ import io.legado.app.utils.iconItemOnLongClick
 import io.legado.app.utils.invisible
 import io.legado.app.utils.isAbsUrl
 import io.legado.app.utils.isTrue
-import io.legado.app.utils.launch
 import io.legado.app.utils.navigationBarGravity
 import io.legado.app.utils.navigationBarHeight
 import io.legado.app.utils.observeEvent
@@ -569,9 +568,9 @@ class ReadBookActivity : BaseReadBookActivity(),
     /**
      * 按键拦截,显示菜单
      */
-    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
-        val keyCode = event?.keyCode
-        val action = event?.action
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        val keyCode = event.keyCode
+        val action = event.action
         val isDown = action == 0
 
         if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -1282,7 +1281,7 @@ class ReadBookActivity : BaseReadBookActivity(),
                 }
 
                 "menu" -> showActionMenu()
-                "selectFolder" -> selectImageDir.launch()
+                "selectFolder" -> selectImageDir.launch(null)
             }
             popupAction.dismiss()
         }
