@@ -29,7 +29,6 @@ import io.legado.app.ui.widget.recycler.VerticalDivider
 import io.legado.app.utils.ACache
 import io.legado.app.utils.GSON
 import io.legado.app.utils.isAbsUrl
-import io.legado.app.utils.launch
 import io.legado.app.utils.readText
 import io.legado.app.utils.sendToClip
 import io.legado.app.utils.setEdgeEffectColor
@@ -141,7 +140,7 @@ class DictRuleActivity : VMBaseActivity<ActivityDictRuleBinding, DictRuleViewMod
                 allowExtensions = arrayOf("txt", "json")
             }
             R.id.menu_import_onLine -> showImportDialog()
-            R.id.menu_import_qr -> qrCodeResult.launch()
+            R.id.menu_import_qr -> qrCodeResult.launch(null)
             R.id.menu_import_default -> viewModel.importDefault()
             R.id.menu_help -> showHelp("dictRuleHelp")
         }
