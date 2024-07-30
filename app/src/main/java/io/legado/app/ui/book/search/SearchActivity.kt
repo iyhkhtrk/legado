@@ -93,7 +93,7 @@ class SearchActivity : VMBaseActivity<ActivityBookSearchBinding, SearchViewModel
         receiptIntent(intent)
     }
 
-    override fun onNewIntent(data: Intent?) {
+    override fun onNewIntent(data: Intent) {
         super.onNewIntent(data)
         receiptIntent(data)
     }
