@@ -7,9 +7,9 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatSeekBar
-import androidx.core.view.ViewCompat
 import io.legado.app.R
 import io.legado.app.lib.theme.accentColor
 import io.legado.app.utils.applyTint
@@ -59,7 +59,7 @@ class VerticalSeekBar @JvmOverloads constructor(context: Context, attrs: Attribu
         if (!isInEditMode) {
             applyTint(context.accentColor)
         }
-        ViewCompat.setLayoutDirection(this, ViewCompat.LAYOUT_DIRECTION_LTR)
+        setLayoutDirection(View.LAYOUT_DIRECTION_LTR)
 
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.VerticalSeekBar)
