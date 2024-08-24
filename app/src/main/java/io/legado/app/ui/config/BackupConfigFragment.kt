@@ -41,7 +41,6 @@ import io.legado.app.utils.applyTint
 import io.legado.app.utils.checkWrite
 import io.legado.app.utils.getPrefString
 import io.legado.app.utils.isContentScheme
-import io.legado.app.utils.launch
 import io.legado.app.utils.setEdgeEffectColor
 import io.legado.app.utils.showDialogFragment
 import io.legado.app.utils.showHelp
@@ -230,11 +229,11 @@ class BackupConfigFragment : PreferenceFragment(),
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         when (preference.key) {
-            PreferKey.backupPath -> selectBackupPath.launch()
+            PreferKey.backupPath -> selectBackupPath.launch(null)
             PreferKey.restoreIgnore -> backupIgnore()
             "web_dav_backup" -> backup()
             "web_dav_restore" -> restore()
-            "import_old" -> restoreOld.launch()
+            "import_old" -> restoreOld.launch(null)
         }
         return super.onPreferenceTreeClick(preference)
     }
@@ -260,7 +259,7 @@ class BackupConfigFragment : PreferenceFragment(),
     fun backup() {
         val backupPath = AppConfig.backupPath
         if (backupPath.isNullOrEmpty()) {
-            backupDir.launch()
+            backupDir.launch(null)
         } else {
             if (backupPath.isContentScheme()) {
                 val uri = Uri.parse(backupPath)
@@ -268,7 +267,7 @@ class BackupConfigFragment : PreferenceFragment(),
                 if (doc?.checkWrite() == true) {
                     backup(backupPath)
                 } else {
-                    backupDir.launch()
+                    backupDir.launch(null)
                 }
             } else {
                 backupUsePermission(backupPath)
