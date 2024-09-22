@@ -133,15 +133,15 @@
 -keep @interface org.chromium.build.annotations.DoNotInline
 -keep @interface org.chromium.build.annotations.UsedByReflection
 -keep @interface org.chromium.build.annotations.IdentifierNameString
-# ** prefixed since JNI Zero classes included in cronet are jarjared to prevent
-# clashes with the real JNI Zero. See https://crbug.com/353534209
--keep @interface **org.jni_zero.AccessedByNative
--keep @interface **org.jni_zero.CalledByNative
--keep @interface **org.jni_zero.CalledByNativeUnchecked
+-keep @interface org.jni_zero.AccessedByNative
+-keep @interface org.jni_zero.CalledByNative
+-keep @interface org.jni_zero.CalledByNativeUnchecked
 
 # Suppress unnecessary warnings.
 -dontnote org.chromium.net.ProxyChangeListener$ProxyReceiver
 -dontnote org.chromium.net.AndroidKeyStore
+# Needs 'void setTextAppearance(int)' (API level 23).
+-dontwarn org.chromium.base.ApiCompatibilityUtils
 # Needs 'boolean onSearchRequested(android.view.SearchEvent)' (API level 23).
 -dontwarn org.chromium.base.WindowCallbackWrapper
 
@@ -171,9 +171,7 @@
 # See crbug.com/1440987. We must keep every native that we are manually
 # registering. If Cronet bumps its min-sdk past 21, we may be able to move to
 # automatic JNI registration.
-# ** prefixed since JNI Zero classes included in cronet are jarjared to prevent
-# clashes with the real JNI Zero. See https://crbug.com/353534209
--keepclasseswithmembers,includedescriptorclasses,allowaccessmodification class org.chromium.**,**J.N {
+-keepclasseswithmembers,includedescriptorclasses,allowaccessmodification class org.chromium.**,J.N {
   native <methods>;
 }
 
@@ -217,13 +215,13 @@
 
 # Keeps for method level annotations.
 -keepclasseswithmembers,allowaccessmodification class ** {
-  @**org.jni_zero.AccessedByNative <fields>;
+  @org.jni_zero.AccessedByNative <fields>;
 }
--keepclasseswithmembers,includedescriptorclasses,allowaccessmodification,allowoptimization class ** {
-  @**org.jni_zero.CalledByNative <methods>;
+-keepclasseswithmembers,includedescriptorclasses,allowaccessmodification class ** {
+  @org.jni_zero.CalledByNative <methods>;
 }
--keepclasseswithmembers,includedescriptorclasses,allowaccessmodification,allowoptimization class ** {
-  @**org.jni_zero.CalledByNativeUnchecked <methods>;
+-keepclasseswithmembers,includedescriptorclasses,allowaccessmodification class ** {
+  @org.jni_zero.CalledByNativeUnchecked <methods>;
 }
 
 # Allow unused native methods to be removed, but prevent renaming on those that
@@ -231,9 +229,4 @@
 # TODO(crbug.com/315973491): Restrict the broad scope of this rule.
 -keepclasseswithmembernames,includedescriptorclasses,allowaccessmodification class ** {
   native <methods>;
-}
-
-# Used when multiplexing. We don't package our own @UsedByReflection, so using this instead.
--keepclasseswithmembers class !cr_allowunused,**J.N {
-  public long *_HASH;
 }
