@@ -354,7 +354,8 @@ object CacheBook {
                 book,
                 chapter,
                 start = CoroutineStart.LAZY,
-                executeContext = IO
+                executeContext = IO,
+                semaphore = semaphore
             ).onSuccess { content ->
                 onSuccess(chapter)
                 ReadBook.downloadedChapters.add(chapter.index)
@@ -367,6 +368,7 @@ object CacheBook {
                 downloadFinish(chapter, "获取正文失败\n${it.localizedMessage}", resetPageOffset)
             }.onCancel {
                 onCancel(chapter.index)
+                downloadFinish(chapter, "download canceled", resetPageOffset, true)
             }.onFinally {
                 postEvent(EventBus.UP_DOWNLOAD, book.bookUrl)
             }.start()
@@ -375,12 +377,14 @@ object CacheBook {
         private fun downloadFinish(
             chapter: BookChapter,
             content: String,
-            resetPageOffset: Boolean = false
+            resetPageOffset: Boolean = false,
+            canceled: Boolean = false
         ) {
             if (ReadBook.book?.bookUrl == book.bookUrl) {
                 ReadBook.contentLoadFinish(
                     book, chapter, content,
                     resetPageOffset = resetPageOffset,
+                    canceled = canceled
                 )
             }
         }
