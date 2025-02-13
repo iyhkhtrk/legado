@@ -428,7 +428,7 @@ cookie.removeCookie(url)
 > 保存至数据库和缓存文件(50M)，保存的内容较大时请使用`getFile putFile`
 ```js
 保存
-cache.put(key: String, value: Any , saveTime: Int)
+cache.put(key: String, value: String, saveTime: Int)
 读取数据库
 cache.get(key: String): String?
 删除
@@ -443,3 +443,10 @@ cache.getFromMemory(key: String): Any?
 cache.putMemory(key: String, value: Any)
 
 ```
+
+## 跳转外部链接/应用函数
+```js
+// 跳转外部链接，传入http链接或者scheme跳转到浏览器或其他应用
+java.openUrl(url:String)
+// 指定mimeType，可以跳转指定类型应用，例如（video/*）
+java.openUrl(url:String,mimeType:String)
