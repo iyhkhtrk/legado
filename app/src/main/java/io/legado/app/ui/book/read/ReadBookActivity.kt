@@ -1,7 +1,6 @@
 package io.legado.app.ui.book.read
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -169,14 +168,12 @@ class ReadBookActivity : BaseReadBookActivity(),
         }
     private val replaceActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            it ?: return@registerForActivityResult
             if (it.resultCode == RESULT_OK) {
                 viewModel.replaceRuleChanged()
             }
         }
     private val searchContentActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            it ?: return@registerForActivityResult
             it.data?.let { data ->
                 val key = data.getLongExtra("key", System.currentTimeMillis())
                 val index = data.getIntExtra("index", 0)
@@ -189,7 +186,7 @@ class ReadBookActivity : BaseReadBookActivity(),
                     viewModel.searchResultIndex = index
                     binding.searchMenu.updateSearchResultIndex(index)
                     binding.searchMenu.selectedSearchResult?.let { currentResult ->
-                        ReadBook.saveCurrentBookProcess() //退出全文搜索恢复此时进度
+                        ReadBook.saveCurrentBookProgress() //退出全文搜索恢复此时进度
                         skipToSearch(currentResult)
                         showActionMenu()
                     }
@@ -272,7 +269,7 @@ class ReadBookActivity : BaseReadBookActivity(),
                 return@addCallback
             }
             //拦截返回供恢复阅读进度
-            if (ReadBook.lastBookPress != null && confirmRestoreProcess != false) {
+            if (ReadBook.lastBookProgress != null && confirmRestoreProcess != false) {
                 restoreLastBookProcess()
                 return@addCallback
             }
@@ -1242,20 +1239,20 @@ class ReadBookActivity : BaseReadBookActivity(),
     /* 恢复到 全文搜索/进度条跳转前的位置 */
     private fun restoreLastBookProcess() {
         if (confirmRestoreProcess == true) {
-            ReadBook.restoreLastBookProcess()
+            ReadBook.restoreLastBookProgress()
         } else if (confirmRestoreProcess == null) {
             alert(R.string.draw) {
                 setMessage(R.string.restore_last_book_process)
                 yesButton {
                     confirmRestoreProcess = true
-                    ReadBook.restoreLastBookProcess() //恢复启动全文搜索前的进度
+                    ReadBook.restoreLastBookProgress() //恢复启动全文搜索前的进度
                 }
                 noButton {
-                    ReadBook.lastBookPress = null
+                    ReadBook.lastBookProgress = null
                     confirmRestoreProcess = false
                 }
                 onCancelled {
-                    ReadBook.lastBookPress = null
+                    ReadBook.lastBookProgress = null
                     confirmRestoreProcess = false
                 }
             }
@@ -1454,7 +1451,7 @@ class ReadBookActivity : BaseReadBookActivity(),
 
     /* 进度条跳转到指定章节 */
     override fun skipToChapter(index: Int) {
-        ReadBook.saveCurrentBookProcess() //退出章节跳转恢复此时进度
+        ReadBook.saveCurrentBookProgress() //退出章节跳转恢复此时进度
         viewModel.openChapter(index)
     }
 
@@ -1578,7 +1575,7 @@ class ReadBookActivity : BaseReadBookActivity(),
                     ReadBook.book?.removeType(BookType.notShelf)
                     ReadBook.book?.save()
                     ReadBook.inBookshelf = true
-                    setResult(Activity.RESULT_OK)
+                    setResult(RESULT_OK)
                 }
                 noButton { viewModel.removeFromBookshelf { super.finish() } }
             }

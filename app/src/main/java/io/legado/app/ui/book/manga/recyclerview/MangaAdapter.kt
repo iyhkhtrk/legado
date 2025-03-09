@@ -1,4 +1,4 @@
-package io.legado.app.ui.book.manga.rv
+package io.legado.app.ui.book.manga.recyclerview
 
 import android.content.Context
 import android.util.SparseArray
@@ -22,9 +22,8 @@ import io.legado.app.databinding.BookComicRvBinding
 import io.legado.app.help.glide.progress.ProgressManager
 import io.legado.app.model.BookCover
 import io.legado.app.model.ReadManga
-import io.legado.app.model.recyclerView.MangaVH
-import io.legado.app.model.recyclerView.MangeContent
-import io.legado.app.model.recyclerView.ReaderLoading
+import io.legado.app.ui.book.manga.entities.MangaContent
+import io.legado.app.ui.book.manga.entities.ReaderLoading
 import io.legado.app.utils.getCompatDrawable
 import java.util.Collections
 
@@ -32,16 +31,20 @@ import java.util.Collections
 class MangaAdapter(private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), PreloadModelProvider<Any> {
 
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
+
     companion object {
         private const val LOADING_VIEW = 0
         private const val CONTENT_VIEW = 1
     }
 
+    var isHorizontal = false
+
     private val mDiffCallback: DiffUtil.ItemCallback<Any> = object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return if (oldItem is ReaderLoading && newItem is ReaderLoading) {
                 newItem.mMessage == oldItem.mMessage
-            } else if (oldItem is MangeContent && newItem is MangeContent) {
+            } else if (oldItem is MangaContent && newItem is MangaContent) {
                 oldItem.mImageUrl == newItem.mImageUrl
             } else false
         }
@@ -49,7 +52,7 @@ class MangaAdapter(private val context: Context) :
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return if (oldItem is ReaderLoading && newItem is ReaderLoading) {
                 oldItem == newItem
-            } else if (oldItem is MangeContent && newItem is MangeContent) {
+            } else if (oldItem is MangaContent && newItem is MangaContent) {
                 oldItem == newItem
             } else false
         }
@@ -57,22 +60,17 @@ class MangaAdapter(private val context: Context) :
 
     private val mDiffer = AsyncListDiffer(this, mDiffCallback)
 
-    private fun getItem(@IntRange(from = 0) position: Int) = mDiffer.currentList[position]
+    fun getItem(@IntRange(from = 0) position: Int) = mDiffer.currentList.getOrNull(position)
 
     fun getCurrentList() = mDiffer.currentList
 
+    fun isEmpty() = mDiffer.currentList.isEmpty()
+
+    fun isNotEmpty() = !isEmpty()
+
     //全部替换数据
-    fun submitList(contents: MutableList<Any>, runnable: Runnable) {
-        val list = if (ReadManga.chapterChanged) {
-            contents
-        } else {
-            val currentList = mDiffer.currentList.toMutableList()
-            currentList.addAll(contents)
-            currentList
-        }
-        mDiffer.submitList(list) {
-            runnable.run()
-        }
+    fun submitList(contents: List<Any>, runnable: Runnable? = null) {
+        mDiffer.submitList(contents, runnable)
     }
 
     inner class PageViewHolder(binding: BookComicRvBinding) :
@@ -88,14 +86,16 @@ class MangaAdapter(private val context: Context) :
             )
             binding.retry.setOnClickListener {
                 val item = mDiffer.currentList[layoutPosition]
-                if (item is MangeContent) {
-                    loadImageWithRetry(item.mImageUrl)
+                if (item is MangaContent) {
+                    loadImageWithRetry(
+                        item.mImageUrl, isHorizontal, item.imageCount == 1
+                    )
                 }
             }
         }
 
-        fun onBind(item: MangeContent) {
-            loadImageWithRetry(item.mImageUrl)
+        fun onBind(item: MangaContent) {
+            loadImageWithRetry(item.mImageUrl, isHorizontal, item.imageCount == 1)
         }
     }
 
@@ -109,29 +109,18 @@ class MangaAdapter(private val context: Context) :
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
         return when {
-
             viewType >= TYPE_FOOTER_VIEW -> {
                 ItemViewHolder(footerItems.get(viewType).invoke(parent))
             }
 
-            viewType == LOADING_VIEW -> PageMoreViewHolder(
-                BookComicLoadingRvBinding.inflate(
-                    LayoutInflater.from(
-                        parent.context
-                    ), parent, false
-                )
-            )
+            viewType == LOADING_VIEW -> {
+                PageMoreViewHolder(BookComicLoadingRvBinding.inflate(inflater, parent, false))
+            }
 
-            viewType == CONTENT_VIEW -> PageViewHolder(
-                BookComicRvBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            )
-
+            viewType == CONTENT_VIEW -> {
+                PageViewHolder(BookComicRvBinding.inflate(inflater, parent, false))
+            }
 
             else -> error("Unknown view type!")
         }
@@ -142,7 +131,7 @@ class MangaAdapter(private val context: Context) :
     override fun getItemViewType(position: Int): Int {
         return when {
             isFooter(position) -> TYPE_FOOTER_VIEW + position - getActualItemCount()
-            getItem(position) is MangeContent -> CONTENT_VIEW
+            getItem(position) is MangaContent -> CONTENT_VIEW
             getItem(position) is ReaderLoading -> LOADING_VIEW
             else -> error("Unknown view type!")
         }
@@ -169,7 +158,7 @@ class MangaAdapter(private val context: Context) :
 
     override fun onBindViewHolder(vh: RecyclerView.ViewHolder, position: Int) {
         when (vh) {
-            is PageViewHolder -> vh.onBind(getItem(position) as MangeContent)
+            is PageViewHolder -> vh.onBind(getItem(position) as MangaContent)
             is PageMoreViewHolder -> vh.onBind(getItem(position) as ReaderLoading)
         }
     }
@@ -209,7 +198,7 @@ class MangaAdapter(private val context: Context) :
     }
 
     override fun getPreloadRequestBuilder(item: Any): RequestBuilder<*>? {
-        if (item is MangeContent) {
+        if (item is MangaContent) {
             return BookCover.loadManga(
                 context,
                 item.mImageUrl,

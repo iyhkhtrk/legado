@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.annotation.DrawableRes
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
@@ -12,7 +13,6 @@ import io.legado.app.utils.isAbsUrl
 import io.legado.app.utils.isContentScheme
 import io.legado.app.utils.isDataUrl
 import io.legado.app.utils.lifecycle
-import splitties.init.appCtx
 import java.io.File
 
 //https://bumptech.github.io/glide/doc/generatedapi.html
@@ -37,8 +37,8 @@ object ImageLoader {
         }
     }
 
-    fun load(lifecycle: Lifecycle, path: String?): RequestBuilder<Drawable> {
-        val requestManager = Glide.with(appCtx).lifecycle(lifecycle)
+    fun load(fragment: Fragment, lifecycle: Lifecycle, path: String?): RequestBuilder<Drawable> {
+        val requestManager = Glide.with(fragment).lifecycle(lifecycle)
         return when {
             path.isNullOrEmpty() -> requestManager.load(path)
             path.isDataUrl() -> requestManager.load(path)

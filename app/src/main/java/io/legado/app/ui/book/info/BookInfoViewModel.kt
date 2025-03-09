@@ -26,13 +26,13 @@ import io.legado.app.help.book.isNotShelf
 import io.legado.app.help.book.isSameNameAuthor
 import io.legado.app.help.book.isWebFile
 import io.legado.app.help.book.removeType
-import io.legado.app.help.book.simulatedTotalChapterNum
 import io.legado.app.help.book.updateTo
 import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.lib.webdav.ObjectNotFoundException
 import io.legado.app.model.AudioPlay
 import io.legado.app.model.BookCover
 import io.legado.app.model.ReadBook
+import io.legado.app.model.ReadManga
 import io.legado.app.model.analyzeRule.AnalyzeUrl
 import io.legado.app.model.localBook.LocalBook
 import io.legado.app.model.webBook.WebBook
@@ -226,6 +226,8 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
                     appDb.bookDao.update(book)
                     appDb.bookChapterDao.delByBook(book.bookUrl)
                     appDb.bookChapterDao.insert(*it.toTypedArray())
+                    ReadBook.onChapterListUpdated(book)
+                    bookData.postValue(book)
                     chapterListData.postValue(it)
                 }
             }.onError {
@@ -252,11 +254,7 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
                         }
                         appDb.bookChapterDao.delByBook(oldBook.bookUrl)
                         appDb.bookChapterDao.insert(*it.toTypedArray())
-                        if (book.isSameNameAuthor(ReadBook.book)) {
-                            ReadBook.book = book
-                            ReadBook.chapterSize = book.totalChapterNum
-                            ReadBook.simulatedChapterSize = book.simulatedTotalChapterNum()
-                        }
+                        ReadBook.onChapterListUpdated(book)
                     }
                     bookData.postValue(book)
                     chapterListData.postValue(it)
@@ -485,6 +483,9 @@ class BookInfoViewModel(application: Application) : BaseViewModel(application) {
             BookHelp.clearCache(bookData.value!!)
             if (ReadBook.book?.bookUrl == bookData.value!!.bookUrl) {
                 ReadBook.clearTextChapter()
+            }
+            if (ReadManga.book?.bookUrl == bookData.value!!.bookUrl) {
+                ReadManga.clearMangaChapter()
             }
         }.onSuccess {
             context.toastOnUi(R.string.clear_cache_success)
