@@ -137,7 +137,12 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     packaging {
-        resources.excludes.add('META-INF/*')
+        resources.excludes.addAll([
+            '/META-INF/*',
+            '/META-INF/androidx/**',
+            '/kotlin/**',
+            '/okhttp3/**'
+        ])
     }
 
     sourceSets {
@@ -235,6 +240,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(fileTree(dir: 'cronetlib', include: ['*.jar', '*.aar']))
     implementation(libs.protobuf.javalite)
+    implementation(libs.conscrypt.android)
 
     //Glide
     implementation(libs.glide.glide)
@@ -274,12 +280,12 @@ dependencies {
 
     //加解密类库,有些书源使用
     //noinspection GradleDependency,GradlePackageUpdate
-    implementation(libs.hutool.crypto)
+    //implementation(libs.hutool.crypto)
 
     //firebase, 崩溃统计和性能统计
-    implementation platform(libs.firebase.bom)
-    implementation libs.firebase.analytics
-    implementation libs.firebase.perf
+    //implementation platform(libs.firebase.bom)
+    //implementation libs.firebase.analytics
+    //implementation libs.firebase.perf
 
     implementation libs.glide.recyclerview
 

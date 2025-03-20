@@ -41,9 +41,11 @@ import io.legado.app.utils.getPrefBoolean
 import io.legado.app.utils.isDebuggable
 import kotlinx.coroutines.launch
 import org.chromium.base.ThreadUtils
+import org.conscrypt.Conscrypt
 import splitties.init.appCtx
 import splitties.systemservices.notificationManager
 import java.net.URL
+import java.security.Security
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
@@ -76,7 +78,7 @@ class App : Application() {
         AppFreezeMonitor.init(this)
         Coroutine.async {
             URL.setURLStreamHandlerFactory(ObsoleteUrlFactory(okHttpClient))
-            launch { installGmsTlsProvider(appCtx) }
+            Security.insertProviderAt(Conscrypt.newProvider(), 1)
             //初始化封面
             BookCover.toString()
             //清除过期数据
@@ -117,36 +119,6 @@ class App : Application() {
             applyDayNight(this)
         }
         oldConfig = Configuration(newConfig)
-    }
-
-    /**
-     * 尝试在安装了GMS的设备上(GMS或者MicroG)使用GMS内置的Conscrypt
-     * 作为首选JCE提供程序，而使Okhttp在低版本Android上
-     * 能够启用TLSv1.3
-     * https://f-droid.org/zh_Hans/2020/05/29/android-updates-and-tls-connections.html
-     * https://developer.android.google.cn/reference/javax/net/ssl/SSLSocket
-     *
-     * @param context
-     * @return
-     */
-    private fun installGmsTlsProvider(context: Context) {
-        try {
-            val gmsPackageName = "com.google.android.gms"
-            val appInfo = packageManager.getApplicationInfo(gmsPackageName, 0)
-            if ((appInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) {
-                return
-            }
-            val gms = context.createPackageContext(
-                gmsPackageName,
-                CONTEXT_INCLUDE_CODE or CONTEXT_IGNORE_SECURITY
-            )
-            gms.classLoader
-                .loadClass("com.google.android.gms.common.security.ProviderInstallerImpl")
-                .getMethod("insertProvider", Context::class.java)
-                .invoke(null, gms)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
     }
 
     /**
