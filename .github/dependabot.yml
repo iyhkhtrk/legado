@@ -16,11 +16,11 @@ updates:
   - package-ecosystem: gradle
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
     registries: "*"
     open-pull-requests-limit: 20
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
