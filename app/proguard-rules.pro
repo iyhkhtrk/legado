@@ -128,3 +128,6 @@ cn.hutool.core.util.**{*;}
 # Throwable
 -keepnames class * extends java.lang.Throwable
 -keepclassmembernames,allowobfuscation class * extends java.lang.Throwable{*;}
+
+-keep public class org.bouncycastle.jcajce.provider.** { *; }
+-keep public class org.bouncycastle.jce.provider.** { *; }
