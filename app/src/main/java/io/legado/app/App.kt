@@ -43,9 +43,11 @@ import io.legado.app.utils.getPrefBoolean
 import io.legado.app.utils.isDebuggable
 import kotlinx.coroutines.launch
 import org.chromium.base.ThreadUtils
+import org.conscrypt.Conscrypt
 import splitties.init.appCtx
 import splitties.systemservices.notificationManager
 import java.net.URL
+import java.security.Security
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
@@ -67,6 +69,7 @@ class App : Application() {
             LogUtils.init(this@App)
             LogUtils.d("App", "onCreate")
             LogUtils.logDeviceInfo()
+            Security.insertProviderAt(Conscrypt.newProvider(), 1)
             //预下载Cronet so
             Cronet.preDownload()
             createNotificationChannels()
@@ -78,7 +81,7 @@ class App : Application() {
             DefaultData.upVersion()
             AppFreezeMonitor.init(this@App)
             URL.setURLStreamHandlerFactory(ObsoleteUrlFactory(okHttpClient))
-            launch { installGmsTlsProvider(appCtx) }
+            //launch { installGmsTlsProvider(appCtx) }
             RhinoScriptEngine
             //初始化封面
             BookCover.toString()
