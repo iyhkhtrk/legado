@@ -74,6 +74,9 @@ android {
     }
     buildTypes {
         release {
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig signingConfigs.myConfig
             }
@@ -183,6 +186,7 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.fragment.ktx)
     implementation(libs.preference.ktx)
+    implementation(libs.profileinstaller)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.recyclerview)
@@ -274,12 +278,12 @@ dependencies {
 
     //加解密类库,有些书源使用
     //noinspection GradleDependency,GradlePackageUpdate
-    implementation(libs.hutool.crypto)
+    //implementation(libs.hutool.crypto)
 
     //firebase, 崩溃统计和性能统计
-    implementation platform(libs.firebase.bom)
-    implementation libs.firebase.analytics
-    implementation libs.firebase.perf
+    //implementation platform(libs.firebase.bom)
+    //implementation libs.firebase.analytics
+    //implementation libs.firebase.perf
 
     implementation libs.glide.recyclerview
 
