@@ -5,7 +5,7 @@ branch=$1
 #api 最大偏移
 max_offset=$2
 
-[ -z $1 ] && branch=Beta
+[ -z $1 ] && branch=Canary
 [ -z $2 ] && max_offset=3
 [ -z $GITHUB_ENV ] && echo "Error: Unexpected github workflow environment" && exit
 
