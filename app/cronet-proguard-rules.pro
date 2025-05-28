@@ -182,6 +182,10 @@
 -keepclassmembers class org.chromium.** extends com.google.protobuf.GeneratedMessageLite {
   <fields>;
 }
+
+# Part of the Android System SDK; false positive when pointing ProGuard to the
+# public SDK.
+-dontwarn android.os.SystemProperties
 # -------- Config Path: components/cronet/android/cronet_shared_proguard.cfg --------
 # Proguard config for apps that depend on cronet_shared_java.jar (which should
 # be all apps that depend on any part of Cronet)
@@ -235,3 +239,9 @@
 }
 # -------- Config Path: obj/third_party/androidx/androidx_annotation_annotation_experimental_java/proguard.txt --------
 # Intentionally empty proguard rules to indicate this library is safe to shrink
+# Proguard config for apps that depend on httpengine_native_provider_java.jar.
+
+# This constructor is called using the reflection from Cronet API (cronet_api.jar).
+-keep class org.chromium.net.impl.HttpEngineNativeProvider {
+    public <init>(android.content.Context);
+}
