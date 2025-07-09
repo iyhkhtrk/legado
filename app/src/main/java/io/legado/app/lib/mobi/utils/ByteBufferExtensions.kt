@@ -1,8 +1,13 @@
 package io.legado.app.lib.mobi.utils
 
-import okhttp3.internal.and
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
+
+infix fun Byte.and(mask: Int): Int = toInt() and mask
+
+infix fun Short.and(mask: Int): Int = toInt() and mask
+
+infix fun Int.and(mask: Long): Long = toLong() and mask
 
 fun ByteBuffer.readByteArray(offset: Int, len: Int): ByteArray {
     position(offset)
