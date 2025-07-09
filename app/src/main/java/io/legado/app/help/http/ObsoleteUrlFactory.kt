@@ -18,8 +18,6 @@ import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
-import okhttp3.internal.notifyAll
-import okhttp3.internal.wait
 import okio.Buffer
 import okio.BufferedSink
 import okio.Pipe
@@ -146,7 +144,7 @@ class ObsoleteUrlFactory(private var client: OkHttpClient) : URLStreamHandlerFac
         //var fixedContentLength = -1L
 
         // These fields are guarded by lock.
-        private val lock = Any()
+        private val lock = Any() as Object
         private var response: Response? = null
         private var callFailure: Throwable? = null
         var networkResponse: Response? = null

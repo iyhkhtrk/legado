@@ -14,7 +14,8 @@ import okhttp3.EventListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okhttp3.internal.http.HttpMethod
-import okhttp3.internal.http.StatusLine
+import okhttp3.internal.http.HTTP_PERM_REDIRECT
+import okhttp3.internal.http.HTTP_TEMP_REDIRECT
 import okio.Buffer
 import okio.Source
 import okio.Timeout
@@ -317,14 +318,17 @@ abstract class AbsCallBack(
                 )
             }
 
-            return Response.Builder()
-                .request(request)
-                .receivedResponseAtMillis(System.currentTimeMillis())
-                .protocol(protocol)
-                .code(responseInfo.httpStatusCode)
-                .message(responseInfo.httpStatusText)
-                .headers(headers)
-                .body(responseBody)
+            return Response.Builder().apply {
+                request(request)
+                receivedResponseAtMillis(System.currentTimeMillis())
+                protocol(protocol)
+                code(responseInfo.httpStatusCode)
+                message(responseInfo.httpStatusText)
+                headers(headers)
+                responseBody?.let {
+                    body(it)
+                }
+            }
         }
 
         private fun buildPriorResponse(
@@ -381,9 +385,9 @@ abstract class AbsCallBack(
             if (HttpMethod.permitsRequestBody(method)) {
                 val responseCode = userResponse.code
                 val maintainBody = HttpMethod.redirectsWithBody(method) ||
-                        responseCode == StatusLine.HTTP_PERM_REDIRECT ||
-                        responseCode == StatusLine.HTTP_TEMP_REDIRECT
-                if (HttpMethod.redirectsToGet(method) && responseCode != StatusLine.HTTP_PERM_REDIRECT && responseCode != StatusLine.HTTP_TEMP_REDIRECT) {
+                        responseCode == HTTP_PERM_REDIRECT ||
+                        responseCode == HTTP_TEMP_REDIRECT
+                if (HttpMethod.redirectsToGet(method) && responseCode != HTTP_PERM_REDIRECT && responseCode != HTTP_TEMP_REDIRECT) {
                     requestBuilder.method("GET", null)
                 } else {
                     val requestBody = if (maintainBody) userResponse.request.body else null

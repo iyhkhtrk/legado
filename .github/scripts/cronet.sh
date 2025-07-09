@@ -57,6 +57,7 @@ function sync_proguard_rules() {
     local raw_github_git="https://raw.githubusercontent.com/chromium/chromium/$lastest_cronet_version"
     local proguard_paths=(
       components/cronet/android/cronet_combined_impl_native_proguard_golden.cfg
+      components/cronet/android/httpengine_native_provider_proguard.cfg
     )
     local proguard_rules_path="$GITHUB_WORKSPACE/app/cronet-proguard-rules.pro"
     rm -f $proguard_rules_path
