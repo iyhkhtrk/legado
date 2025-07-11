@@ -24,7 +24,7 @@ object DecompressInterceptor : Interceptor {
         val response = chain.proceed(requestBuilder.build())
         val body = response.body
 
-        if (!transparentDecompress || !response.promisesBody() || body == null) {
+        if (!transparentDecompress || !response.promisesBody()) {
             return response
         }
 
