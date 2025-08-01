@@ -25,10 +25,10 @@ def gitCommits = Integer.parseInt('git rev-list HEAD --count'.execute().text.tri
 
 android {
     compileSdk = compile_sdk_version
-    namespace 'io.legado.app'
+    namespace = 'io.legado.app'
     kotlin {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 
@@ -39,8 +39,8 @@ android {
                 storePassword RELEASE_STORE_PASSWORD
                 keyAlias RELEASE_KEY_ALIAS
                 keyPassword RELEASE_KEY_PASSWORD
-                v1SigningEnabled true
-                v2SigningEnabled true
+                v1SigningEnabled = true
+                v2SigningEnabled = true
                 enableV3Signing = true
                 enableV4Signing = true
             }
@@ -48,8 +48,8 @@ android {
     }
     defaultConfig {
         applicationId "io.legado.app"
-        minSdk 21
-        targetSdk 35
+        minSdk = 21
+        targetSdk = 35
         versionCode 10000 + gitCommits
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -69,13 +69,16 @@ android {
         }
     }
     buildFeatures {
-        buildConfig true
-        viewBinding true
+        buildConfig = true
+        viewBinding = true
     }
     buildTypes {
         release {
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
             if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfig signingConfigs.myConfig
+                signingConfig = signingConfigs.myConfig
             }
             applicationIdSuffix '.release'
             if (getApplicationIdSuffix() == '.releaseA') {
@@ -85,12 +88,12 @@ android {
             }
 
             minifyEnabled true
-            shrinkResources true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'cronet-proguard-rules.pro'
         }
         debug {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfig signingConfigs.myConfig
+                signingConfig = signingConfigs.myConfig
             }
             manifestPlaceholders.put("app_name", "@string/app_name")
 
@@ -131,10 +134,10 @@ android {
 
     compileOptions {
         // Flag to enable support for the new language APIs
-        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled = true
         // Sets Java compatibility
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
     packaging {
         resources.excludes.add('META-INF/*')
@@ -145,7 +148,7 @@ android {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
     lint {
-        checkDependencies true
+        checkDependencies = true
     }
     tasks.withType(JavaCompile).tap {
         configureEach {
@@ -274,12 +277,12 @@ dependencies {
 
     //加解密类库,有些书源使用
     //noinspection GradleDependency,GradlePackageUpdate
-    implementation(libs.hutool.crypto)
+    //implementation(libs.hutool.crypto)
 
     //firebase, 崩溃统计和性能统计
-    implementation platform(libs.firebase.bom)
-    implementation libs.firebase.analytics
-    implementation libs.firebase.perf
+    //implementation platform(libs.firebase.bom)
+    //implementation libs.firebase.analytics
+    //implementation libs.firebase.perf
 
     implementation libs.glide.recyclerview
 
