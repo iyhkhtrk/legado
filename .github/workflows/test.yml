@@ -53,7 +53,7 @@ jobs:
     strategy:
       matrix:
         product: [ app ]
-        type: [ release, releaseA ]
+        type: [ release ]
       fail-fast: false
     runs-on: ubuntu-latest
     env:
@@ -146,12 +146,12 @@ jobs:
           if-no-files-found: ignore
           path: ${{ github.workspace }}/apk/*.apk
 
-      - name: Upload Mapping File To Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: legado.${{ env.product }}.${{ env.type }}.mapping
-          if-no-files-found: ignore
-          path: ${{ github.workspace }}/mapping/mapping.txt
+      #- name: Upload Mapping File To Artifact
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: legado.${{ env.product }}.${{ env.type }}.mapping
+      #    if-no-files-found: ignore
+      #    path: ${{ github.workspace }}/mapping/mapping.txt
 
   prerelease:
     needs: [ prepare, build ]
