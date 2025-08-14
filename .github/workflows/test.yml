@@ -53,7 +53,7 @@ jobs:
     strategy:
       matrix:
         product: [ app ]
-        type: [ release, releaseA ]
+        type: [ release ]
       fail-fast: false
     runs-on: ubuntu-latest
     env:
@@ -146,12 +146,12 @@ jobs:
           if-no-files-found: ignore
           path: ${{ github.workspace }}/apk/*.apk
 
-      - name: Upload Mapping File To Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: legado.${{ env.product }}.${{ env.type }}.mapping
-          if-no-files-found: ignore
-          path: ${{ github.workspace }}/mapping/mapping.txt
+      #- name: Upload Mapping File To Artifact
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: legado.${{ env.product }}.${{ env.type }}.mapping
+      #    if-no-files-found: ignore
+      #    path: ${{ github.workspace }}/mapping/mapping.txt
 
   prerelease:
     needs: [ prepare, build ]
@@ -161,7 +161,7 @@ jobs:
       VERSION: ${{ needs.prepare.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: apk/
 
@@ -216,7 +216,7 @@ jobs:
       LANZOU_URL: ${{ secrets.LANZOU_URL }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: apk/
       - working-directory: apk/
@@ -234,7 +234,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' && github.actor == 'gedoor' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: apk/
       - working-directory: apk/
@@ -257,7 +257,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: apk/
       - working-directory: apk/
