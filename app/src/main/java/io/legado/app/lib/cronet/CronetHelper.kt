@@ -36,7 +36,7 @@ val cronetEngine: ExperimentalCronetEngine? by lazy {
         enableHttp2(true)  //设置支持http/2
         enablePublicKeyPinningBypassForLocalTrustAnchors(true)
         enableBrotli(true)//Brotli压缩
-        setExperimentalOptions(options)
+        //setExperimentalOptions(options)
     }
     try {
         val engine = builder.build()
@@ -47,7 +47,7 @@ val cronetEngine: ExperimentalCronetEngine? by lazy {
         return@lazy null
     }
 }
-
+/**
 val options by lazy {
     val options = JSONObject()
 
@@ -69,7 +69,7 @@ val options by lazy {
 
     options.toString()
 }
-
+**/
 fun buildRequest(request: Request, callback: UrlRequest.Callback): UrlRequest? {
     val url = request.url.toString()
     val headers: Headers = request.headers
