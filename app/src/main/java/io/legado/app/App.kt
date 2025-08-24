@@ -55,9 +55,11 @@ import io.legado.app.utils.getPrefBoolean
 import io.legado.app.utils.isDebuggable
 import kotlinx.coroutines.launch
 import org.chromium.base.ThreadUtils
+import org.conscrypt.Conscrypt
 import splitties.init.appCtx
 import splitties.systemservices.notificationManager
 import java.net.URL
+import java.security.Security
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
@@ -68,8 +70,9 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         CrashHandler(this)
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
         if (isDebuggable) {
-            ThreadUtils.setThreadAssertsDisabledForTesting(true)
+            ThreadUtils.hasSubtleSideEffectsSetThreadAssertsDisabledForTesting(true)
         }
         oldConfig = Configuration(resources.configuration)
         applyDayNightInit(this)
@@ -90,7 +93,7 @@ class App : Application() {
             DefaultData.upVersion()
             AppFreezeMonitor.init(this@App)
             URL.setURLStreamHandlerFactory(ObsoleteUrlFactory(okHttpClient))
-            launch { installGmsTlsProvider(appCtx) }
+            //launch { installGmsTlsProvider(appCtx) }
             initRhino()
             //初始化封面
             BookCover.toString()
