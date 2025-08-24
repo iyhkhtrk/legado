@@ -1,17 +1,14 @@
 name: Update Cronet
 
 on:
-  schedule:
-  # 周一北京时间9点
-    - cron: 0 1 * * 1
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'gedoor/legado' }}
+    #if: ${{ github.repository == 'gedoor/legado' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Check Cronet Updates
         run: source .github/scripts/cronet.sh
@@ -46,7 +43,8 @@ jobs:
           branch: cronet
           delete-branch: true
           add-paths: |
-            *cronet*jar
+            *_api.jar
+            *_java.jar
             *cronet.json
             *updateLog.md
             *gradle.properties
