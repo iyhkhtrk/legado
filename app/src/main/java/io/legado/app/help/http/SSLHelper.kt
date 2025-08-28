@@ -52,14 +52,18 @@ object SSLHelper {
         X509TrustManagerExtensions(unsafeTrustManager)
     }
 
-    val unsafeSSLSocketFactory: SSLSocketFactory by lazy {
+    val unsafeSSLContext: SSLContext by lazy {
         try {
             val sslContext = SSLContext.getInstance("SSL")
             sslContext.init(null, arrayOf(unsafeTrustManager), SecureRandom())
-            sslContext.socketFactory
+            sslContext
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
+    }
+    
+    val unsafeSSLSocketFactory: SSLSocketFactory by lazy {
+        unsafeSSLContext.socketFactory
     }
 
     /**
