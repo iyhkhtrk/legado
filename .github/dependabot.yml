@@ -16,7 +16,8 @@ updates:
   - package-ecosystem: gradle
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "cron"
+      cronjob: "0 0 * * *"
     registries: "*"
     open-pull-requests-limit: 20
   # Maintain dependencies for GitHub Actions
