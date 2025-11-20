@@ -70,7 +70,7 @@ class App : Application() {
         super.onCreate()
         CrashHandler(this)
         if (isDebuggable) {
-            ThreadUtils.setThreadAssertsDisabledForTesting(true)
+            ThreadUtils.hasSubtleSideEffectsSetThreadAssertsDisabledForTesting(true)
         }
         oldConfig = Configuration(resources.configuration)
         applyDayNightInit(this)
@@ -81,7 +81,7 @@ class App : Application() {
             LogUtils.d("App", "onCreate")
             LogUtils.logDeviceInfo()
             //预下载Cronet so
-            Cronet.preDownload()
+            //Cronet.preDownload()
             createNotificationChannels()
             LiveEventBus.config()
                 .lifecycleObserverAlwaysActive(true)

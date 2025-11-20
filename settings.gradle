@@ -28,10 +28,11 @@ dependencyResolutionManagement {
                 includeGroupByRegex("com\\.android.*")
                 includeGroupByRegex("com\\.google.*")
                 includeGroupByRegex("androidx.*")
+                includeGroupByRegex("org\\.chromium.*")
             }
         }
         maven {
-            url 'https://jitpack.io'
+            url = 'https://jitpack.io'
             content {
                 includeGroupByRegex("com\\.github.*")
             }
