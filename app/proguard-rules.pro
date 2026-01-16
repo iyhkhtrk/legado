@@ -34,9 +34,9 @@
 
 # 指定混淆是采用的算法，后面的参数是一个过滤器
 # 这个过滤器是谷歌推荐的算法，一般不做更改
--optimizations !code/simplification/cast,!field/*,!class/merging/*
+-allowaccessmodification
 
--flattenpackagehierarchy
+-repackageclasses "legado"
 
 #############################################
 #
@@ -81,8 +81,11 @@ cn.hutool.core.util.**{*;}
 # markwon
 -dontwarn org.commonmark.ext.gfm.**
 
--keep class okhttp3.*{*;}
--keep class okio.*{*;}
+-keepclassmembers class
+okhttp3.Headers,
+okhttp3.Request,
+okhttp3.Response,
+okhttp3.ResponseBody{ public *; }
 -keep class com.jayway.jsonpath.*{*;}
 
 # LiveEventBus
@@ -120,6 +123,7 @@ cn.hutool.core.util.**{*;}
 ## JSOUP
 -keep class org.jsoup.**{*;}
 -dontwarn org.jspecify.annotations.NullMarked
+-dontwarn com.google.re2j.**
 
 ## ExoPlayer 反射设置ua 保证该私有变量不被混淆
 -keepclassmembers class androidx.media3.datasource.cache.CacheDataSource$Factory {
