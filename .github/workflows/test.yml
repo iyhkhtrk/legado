@@ -83,8 +83,8 @@ jobs:
           sed "/def version/c def version = \"${{ env.VERSION }}\"" $GITHUB_WORKSPACE/app/build.gradle  -i
           echo "开始${{ env.product }}$typeName构建"
           chmod +x gradlew
-          source .github/scripts/cronet.sh
-          ./gradlew app:downloadCronet
+          #source .github/scripts/cronet.sh
+          #./gradlew app:downloadCronet
           ./gradlew assemble${{ env.product }}release --build-cache --parallel --daemon --warning-mode all
           echo "修改APK文件名"
           mkdir -p ${{ github.workspace }}/apk/

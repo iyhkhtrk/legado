@@ -92,11 +92,11 @@
             android:summary="@string/direct_link_upload_rule_summary"
             android:title="@string/direct_link_upload_rule" />
 
-        <io.legado.app.lib.prefs.SwitchPreference
+        <!--io.legado.app.lib.prefs.SwitchPreference
             android:defaultValue="false"
             android:key="Cronet"
             android:summary="@string/pref_cronet_summary"
-            android:title="Cronet" />
+            android:title="Cronet" /-->
 
         <io.legado.app.lib.prefs.SwitchPreference
             android:defaultValue="false"
