@@ -16,10 +16,6 @@ import org.seimicrawler.xpath.JXNode
 @Keep
 class AnalyzeByJSoup(doc: Any) {
 
-    companion object {
-        private val nullSet = setOf(null)
-    }
-
     private var element: Element = parse(doc)
 
     private fun parse(doc: Any): Element {
@@ -80,7 +76,7 @@ class AnalyzeByJSoup(doc: Any) {
 
         if (sourceRule.elementsRule.isEmpty()) {
 
-            textS.add(element.data() ?: "")
+            textS.add(element.data())
 
         } else {
 
@@ -164,7 +160,7 @@ class AnalyzeByJSoup(doc: Any) {
                         for (et in el) {
                             es.addAll(getElements(et, rl))
                         }
-                        el.clear()
+                        el.deselectAll()
                         el.addAll(es)
                     }
                     el
@@ -217,7 +213,7 @@ class AnalyzeByJSoup(doc: Any) {
             for (elt in elements) {
                 es.addAll(ElementsSingle().getElementsSingle(elt, rules[i]))
             }
-            elements.clear()
+            elements.deselectAll()
             elements = es
         }
         return if (elements.isEmpty()) null else getResultLast(elements, rules[last])
@@ -385,9 +381,7 @@ class AnalyzeByJSoup(doc: Any) {
              * */
             if (split == '!') { //排除
 
-                for (pcInt in indexSet) elements[pcInt] = null
-
-                elements.removeAll(nullSet) //测试过，这样就行
+                for (pcInt in indexSet.sortedDescending()) elements.deselect(pcInt)
 
             } else if (split == '.') { //选择
 
