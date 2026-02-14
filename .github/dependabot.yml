@@ -26,20 +26,16 @@ updates:
   - package-ecosystem: gradle
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "cron"
+      cronjob: "0 15 * * *"
     registries: "*"
     open-pull-requests-limit: 20
-    groups:
-      kotlin_KSP:
-        patterns:
-          - "org.jetbrains.kotlin:*"
-          - "com.google.devtools.ksp"
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: npm
-    directory: "modules/web"
-    schedule:
-      interval: "weekly"
+    groups:
+      maven-dependencies:
+        patterns:
+          - "*"
