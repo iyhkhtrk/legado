@@ -7,7 +7,7 @@ plugins {
 //    id "com.google.gms.google-services"
 
     alias libs.plugins.android.application
-    alias libs.plugins.kotlin.android
+//    alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.parcelize
     alias libs.plugins.room
     alias libs.plugins.ksp
@@ -48,8 +48,8 @@ android {
     }
     defaultConfig {
         applicationId "io.legado.app"
-        minSdk 21
-        targetSdk 36
+        minSdk = 26
+        targetSdk = 36
         versionCode 10000 + gitCommits
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -74,8 +74,11 @@ android {
     }
     buildTypes {
         release {
+            ndk {
+                abiFilters 'arm64-v8a'
+            }
             if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfig signingConfigs.myConfig
+                signingConfig = signingConfigs.myConfig
             }
             applicationIdSuffix '.release'
             if (getApplicationIdSuffix() == '.releaseA') {
@@ -90,7 +93,7 @@ android {
         }
         debug {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
-                signingConfig signingConfigs.myConfig
+                signingConfig = signingConfigs.myConfig
             }
             manifestPlaceholders.put("app_name", "@string/app_name")
 
@@ -109,10 +112,12 @@ android {
         }
     }
 
-    android.applicationVariants.configureEach { variant ->
-        variant.outputs.configureEach {
-            def flavor = variant.productFlavors[0].name
-            outputFileName = "${name}_${flavor}_${defaultConfig.versionName}.apk"
+    androidComponents {
+        onVariants(selector().all()) { variant ->
+            variant.outputs.each {
+                def flavor = variant.productFlavors[0].second
+                it.outputFileName.set("${name}_${flavor}_${defaultConfig.versionName}.apk")
+            }
         }
     }
 
@@ -137,7 +142,15 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     packaging {
-        resources.excludes.add('META-INF/*')
+        resources.excludes.addAll([
+            'META-INF/*',
+            'META-INF/androidx/**',
+            'META-INF/jsoup/**',
+            'core/**',
+            '**/*.kotlin_*',
+            '**/*.proto',
+            'DebugProbesKt.bin'
+        ])
     }
 
     sourceSets {
@@ -275,12 +288,12 @@ dependencies {
 
     //加解密类库,有些书源使用
     //noinspection GradleDependency,GradlePackageUpdate
-    implementation(libs.hutool.crypto)
+    //implementation(libs.hutool.crypto)
 
     //firebase, 崩溃统计和性能统计
-    implementation platform(libs.firebase.bom)
-    implementation libs.firebase.analytics
-    implementation libs.firebase.perf
+    //implementation platform(libs.firebase.bom)
+    //implementation libs.firebase.analytics
+    //implementation libs.firebase.perf
 
     implementation libs.glide.recyclerview
 
