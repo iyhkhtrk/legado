@@ -83,7 +83,7 @@ class App : Application() {
             LogUtils.d("App", "onCreate")
             LogUtils.logDeviceInfo()
             //预下载Cronet so
-            Cronet.preDownload()
+            //Cronet.preDownload()
             createNotificationChannels()
             LiveEventBus.config()
                 .lifecycleObserverAlwaysActive(true)
