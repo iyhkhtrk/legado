@@ -106,7 +106,7 @@ jobs:
           done
 
       - name: Upload Missing Rules File To Artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: legado.${{ env.product }}.${{ env.type }}.mapping.missing_rules
           if-no-files-found: ignore
@@ -125,7 +125,7 @@ jobs:
           fi
 
       - name: Upload App To Artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: legado.${{ env.product }}.${{ env.type }}
           if-no-files-found: ignore
@@ -141,7 +141,7 @@ jobs:
       VERSION: ${{ needs.prepare.outputs.version }}
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           path: apk/
 
@@ -198,7 +198,7 @@ jobs:
       LANZOU_URL: ${{ secrets.LANZOU_URL }}
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           path: apk/
       - working-directory: apk/
@@ -216,7 +216,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' && github.actor == 'gedoor' }}
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           path: apk/
       - working-directory: apk/
@@ -239,7 +239,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           path: apk/
       - working-directory: apk/
