@@ -67,7 +67,7 @@ jobs:
           sed '$a\RELEASE_KEY_PASSWORD=gedoor_legado'       $GITHUB_WORKSPACE/gradle.properties -i
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Build With Gradle
         continue-on-error: true
@@ -249,7 +249,7 @@ jobs:
           done
           rm -rf */
       - name: Post to channel
-        uses: xireiki/channel-post@v1
+        uses: xireiki/channel-post@v2
         with:
           chat_id: ${{ secrets.CHANNEL_ID }}
           bot_token: ${{ secrets.BOT_TOKEN }}
