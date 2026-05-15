@@ -1,11 +1,12 @@
 package io.legado.app.help.rhino
 
 import com.script.rhino.JavaObjectWrapFactory
+import org.mozilla.javascript.lc.type.TypeInfoFactory
 import org.mozilla.javascript.NativeJavaObject
 import org.mozilla.javascript.Scriptable
 
 class NativeBaseSource(scope: Scriptable?, javaObject: Any, staticType: Class<*>?) :
-    NativeJavaObject(scope, javaObject, staticType) {
+    NativeJavaObject(scope, javaObject, TypeInfoFactory.GLOBAL.create(staticType)) {
 
     override fun has(name: String, start: Scriptable): Boolean {
         if (name != "setVariable" && name.length > 3 && name.startsWith("set")) {
