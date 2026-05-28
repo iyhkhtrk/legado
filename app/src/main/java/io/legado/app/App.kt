@@ -57,10 +57,11 @@ import io.legado.app.utils.defaultSharedPreferences
 import io.legado.app.utils.getPrefBoolean
 import io.legado.app.utils.isDebuggable
 import kotlinx.coroutines.launch
-import org.chromium.base.ThreadUtils
+import org.conscrypt.Conscrypt
 import splitties.init.appCtx
 import splitties.systemservices.notificationManager
 import java.net.URL
+import java.security.Security
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
@@ -71,9 +72,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         CrashHandler(this)
-        if (isDebuggable) {
-            ThreadUtils.setThreadAssertsDisabledForTesting(true)
-        }
         oldConfig = Configuration(resources.configuration)
         applyDayNightInit(this)
         registerActivityLifecycleCallbacks(LifecycleHelp)
@@ -83,7 +81,7 @@ class App : Application() {
             LogUtils.d("App", "onCreate")
             LogUtils.logDeviceInfo()
             //预下载Cronet so
-            Cronet.preDownload()
+            //Cronet.preDownload()
             createNotificationChannels()
             LiveEventBus.config()
                 .lifecycleObserverAlwaysActive(true)
@@ -93,8 +91,9 @@ class App : Application() {
             DefaultData.upVersion()
             AppFreezeMonitor.init(this@App)
             DispatchersMonitor.init()
+            Security.insertProviderAt(Conscrypt.newProvider(), 1)
             URL.setURLStreamHandlerFactory(ObsoleteUrlFactory(okHttpClient))
-            launch { installGmsTlsProvider(appCtx) }
+            //launch { installGmsTlsProvider(appCtx) }
             initRhino()
             //初始化封面
             BookCover.toString()
