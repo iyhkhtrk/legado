@@ -9,11 +9,11 @@ max_offset=$2
 [ -z $2 ] && max_offset=3
 [ -z $GITHUB_ENV ] && echo "Error: Unexpected github workflow environment" && exit
 
-offset=0
+offset=1
 
 function fetch_version() {
     # 获取最新cronet版本
-    lastest_cronet_version=`curl -s "https://chromiumdash.appspot.com/fetch_releases?channel=$branch&platform=Android&num=1&offset=$offset" | jq .[0].version -r`
+    lastest_cronet_version=`curl -s "https://chromiumdash.appspot.com/fetch_releases?channel=$branch&platform=Android&num=10&offset=0" | jq .[].version -r | sort -rV | sed -n "${offset}p"`
     echo "lastest_cronet_version: $lastest_cronet_version"
     #lastest_cronet_version=100.0.4845.0
     lastest_cronet_main_version=${lastest_cronet_version%%\.*}.0.0.0
@@ -57,6 +57,7 @@ function sync_proguard_rules() {
     local raw_github_git="https://raw.githubusercontent.com/chromium/chromium/$lastest_cronet_version"
     local proguard_paths=(
       components/cronet/android/cronet_combined_impl_native_proguard_golden.cfg
+      components/cronet/android/httpengine_native_provider_proguard.cfg
     )
     local proguard_rules_path="$GITHUB_WORKSPACE/app/cronet-proguard-rules.pro"
     rm -f $proguard_rules_path
