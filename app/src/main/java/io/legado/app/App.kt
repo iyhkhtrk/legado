@@ -71,9 +71,9 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         CrashHandler(this)
-        if (isDebuggable) {
+        /*if (isDebuggable) {
             ThreadUtils.hasSubtleSideEffectsSetThreadAssertsDisabledForTesting(true)
-        }
+        }*/
         oldConfig = Configuration(resources.configuration)
         applyDayNightInit(this)
         registerActivityLifecycleCallbacks(LifecycleHelp)

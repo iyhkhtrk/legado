@@ -23,6 +23,7 @@ material = "1.14.0"
 media = "1.8.0"
 nanoHttpd = "2.3.1"
 okhttp = "5.5.0"
+cronet = "500.0.2"
 preference = "1.2.1"
 quickChineseTransfer = "0.2.17"
 
@@ -125,6 +126,8 @@ preference-preference = { module = "androidx.preference:preference", version.ref
 preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+cronet = { module = "org.chromium.net:cronet", version.ref = "cronet" }
+cronet-bundled = { module = "org.chromium.net:cronet-bundled", version.ref = "cronet" }
 
 quick-chinese-transfer-core = { module = "com.github.liuyueyi.quick-chinese-transfer:quick-transfer-core", version.ref = "quickChineseTransfer" }
 

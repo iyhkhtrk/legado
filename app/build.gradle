@@ -89,7 +89,7 @@ android {
 
             minifyEnabled true
             shrinkResources = true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'cronet-proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'//, 'cronet-proguard-rules.pro'
         }
         debug {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
@@ -100,7 +100,7 @@ android {
             applicationIdSuffix '.debug'
             versionNameSuffix 'debug'
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'cronet-proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'//, 'cronet-proguard-rules.pro'
         }
     }
     //noinspection GrDeprecatedAPIUsage
@@ -149,7 +149,9 @@ android {
             'core/**',
             '**/*.kotlin_*',
             '**/*.proto',
-            'DebugProbesKt.bin'
+            'DebugProbesKt.bin',
+            'cronet*.properties',
+            'httpengine-native-provider.properties'
         ])
     }
 
@@ -247,6 +249,8 @@ dependencies {
 
     //网络
     implementation(libs.okhttp)
+    implementation(libs.cronet)
+    implementation(libs.cronet.bundled)
     implementation(fileTree(dir: 'cronetlib', include: ['*.jar', '*.aar']))
 
     //Glide
