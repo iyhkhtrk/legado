@@ -1,14 +1,12 @@
 package io.legado.app.lib.cronet
 
 import androidx.annotation.Keep
-import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.http.CookieManager
 import io.legado.app.help.http.CookieManager.cookieJarHeader
 import io.legado.app.help.http.okHttpClient
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.asIOException
 import io.legado.app.utils.splitNotBlank
-import kotlinx.coroutines.delay
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.EventListener
@@ -52,7 +50,6 @@ abstract class AbsCallBack(
     private val canceled = AtomicBoolean(false)
     private val callbackResults = ArrayBlockingQueue<CallbackResult>(2)
     private val urlResponseInfoChain = arrayListOf<UrlResponseInfo>()
-    private var cancelJob: Coroutine<*>? = null
     private var followRedirect = false
     private var enableCookieJar = false
     private var redirectRequest: Request? = null
@@ -71,6 +68,17 @@ abstract class AbsCallBack(
 
     @Throws(IOException::class)
     abstract fun waitForDone(urlRequest: UrlRequest): Response
+
+    protected fun startRequest(urlRequest: UrlRequest) {
+        request = urlRequest
+        CronetRequestRegistry.bind(mCall, urlRequest)
+        urlRequest.start()
+    }
+
+    private fun clearRequest(urlRequest: UrlRequest?) {
+        CronetRequestRegistry.clear(mCall, urlRequest)
+        if (request === urlRequest) request = null
+    }
 
     /**
      * 当发生错误时，通知子类终止阻塞抛出错误
@@ -138,7 +146,7 @@ abstract class AbsCallBack(
             response = toResponse(originalRequest, info, urlResponseInfoChain, CronetBodySource())
         } catch (e: IOException) {
             request.cancel()
-            cancelJob?.cancel()
+            clearRequest(request)
             onError(e)
             return
         }
@@ -177,7 +185,7 @@ abstract class AbsCallBack(
 
     override fun onSucceeded(request: UrlRequest, info: UrlResponseInfo) {
         callbackResults.add(CallbackResult(CallbackStep.ON_SUCCESS))
-        cancelJob?.cancel()
+        clearRequest(request)
         eventListener?.responseBodyEnd(mCall, info.receivedByteCount)
         //DebugLog.i(javaClass.simpleName, "end[${info.negotiatedProtocol}]${info.url}")
 
@@ -188,7 +196,7 @@ abstract class AbsCallBack(
     //UrlResponseInfo可能为null
     override fun onFailed(request: UrlRequest, info: UrlResponseInfo?, error: CronetException) {
         callbackResults.add(CallbackResult(CallbackStep.ON_FAILED, error))
-        cancelJob?.cancel()
+        clearRequest(request)
         DebugLog.e(javaClass.name, error.message.toString())
         onError(error.asIOException())
         eventListener?.callFailed(mCall, error)
@@ -196,31 +204,23 @@ abstract class AbsCallBack(
     }
 
     override fun onCanceled(request: UrlRequest?, info: UrlResponseInfo?) {
+        clearRequest(request)
         if (followRedirect) {
             followRedirect = false
-            if (enableCookieJar) {
+            val nextRequest = if (enableCookieJar) {
                 val newRequest = CookieManager.loadRequest(redirectRequest!!)
-                buildRequest(newRequest, this)?.start()
+                buildRequest(newRequest, this)
             } else {
-                buildRequest(redirectRequest!!, this)?.start()
+                buildRequest(redirectRequest!!, this)
             }
+            nextRequest?.let(::startRequest)
             return
         }
         canceled.set(true)
         callbackResults.add(CallbackResult(CallbackStep.ON_CANCELED))
-        cancelJob?.cancel()
         //DebugLog.i(javaClass.simpleName, "cancel[${info?.negotiatedProtocol}]${info?.url}")
         eventListener?.callEnd(mCall)
         onError(IOException("Cronet Request Canceled"))
-    }
-
-    fun startCheckCancelJob(request: UrlRequest) {
-        cancelJob = Coroutine.async {
-            while (!mCall.isCanceled()) {
-                delay(1000)
-            }
-            request.cancel()
-        }
     }
 
     init {
@@ -426,13 +426,15 @@ abstract class AbsCallBack(
         private val timeout = readTimeoutMillis.toLong()
 
         override fun close() {
-            cancelJob?.cancel()
             if (closed) {
                 return
             }
             closed = true
             if (!finished.get()) {
-                request?.cancel()
+                request?.let {
+                    clearRequest(it)
+                    it.cancel()
+                }
             }
         }
 
