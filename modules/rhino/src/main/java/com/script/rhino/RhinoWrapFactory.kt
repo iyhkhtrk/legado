@@ -25,6 +25,7 @@
 package com.script.rhino
 
 import org.mozilla.javascript.Context
+import org.mozilla.javascript.lc.type.TypeInfo
 import org.mozilla.javascript.NativeJavaPackage
 import org.mozilla.javascript.ScriptRuntime
 import org.mozilla.javascript.Scriptable
@@ -51,7 +52,7 @@ object RhinoWrapFactory : WrapFactory() {
         cx: Context,
         scope: Scriptable?,
         javaObject: Any,
-        staticType: Class<*>?
+        staticType: TypeInfo?
     ): Scriptable? {
         if (!RhinoClassShutter.visibleToScripts(javaObject)) {
             return null
@@ -77,7 +78,7 @@ object RhinoWrapFactory : WrapFactory() {
     private fun wrapOrNull(
         scope: Scriptable?,
         javaObject: Any,
-        staticType: Class<*>?
+        staticType: TypeInfo?
     ): Scriptable? {
         return factories[javaObject.javaClass]?.wrap(scope, javaObject, staticType)
     }
