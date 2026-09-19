@@ -506,6 +506,11 @@ interface JsExtensions : JsEncodeUtils {
         return HexUtil.encodeHexStr(utf8)
     }
 
+    /* ByteArray 编码为hexString */
+    fun hexEncodeToString(bytes: ByteArray): String? {
+        return HexUtil.encodeHexStr(bytes)
+    }
+
     /**
      * 格式化时间
      */
