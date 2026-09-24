@@ -1,10 +1,11 @@
 plugins {
     alias libs.plugins.android.library
-    alias libs.plugins.kotlin.android
+//    alias libs.plugins.kotlin.android
 }
 
 android {
-    compileSdk = compile_sdk_version
+    compileSdk = rootProject.ext.compile_sdk_version
+    compileSdkMinor = rootProject.ext.compile_sdk_minor_version
     namespace = 'me.ag2s'
     kotlin {
         jvmToolchain {
@@ -12,8 +13,8 @@ android {
         }
     }
     defaultConfig {
-        minSdk 21
-        targetSdk 36
+        minSdk = 23
+        targetSdk = 36
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
