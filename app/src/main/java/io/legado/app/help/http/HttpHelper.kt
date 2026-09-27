@@ -6,6 +6,7 @@ import io.legado.app.help.config.AppConfig
 import io.legado.app.help.glide.progress.ProgressManager.LISTENER
 import io.legado.app.help.glide.progress.ProgressResponseBody
 import io.legado.app.help.http.CookieManager.cookieJarHeader
+import io.legado.app.lib.cronet.CronetCancelEventListener
 import io.legado.app.model.ReadManga
 import io.legado.app.utils.NetworkUtils
 import okhttp3.ConnectionSpec
@@ -66,6 +67,7 @@ val okHttpClient: OkHttpClient by lazy {
         .connectionSpecs(specs)
         .followRedirects(true)
         .followSslRedirects(true)
+        .eventListener(CronetCancelEventListener)
         .addInterceptor(OkHttpExceptionInterceptor)
         .addInterceptor { chain ->
             val request = chain.request()
@@ -98,11 +100,11 @@ val okHttpClient: OkHttpClient by lazy {
             networkResponse
         }
     if (AppConfig.isCronet) {
-        if (Cronet.loader?.install() == true) {
+        // if (Cronet.loader?.install() == true) {
             Cronet.interceptor?.let {
                 builder.addInterceptor(it)
             }
-        }
+        // }
     }
     builder.addInterceptor(DecompressInterceptor)
     builder.build().apply {

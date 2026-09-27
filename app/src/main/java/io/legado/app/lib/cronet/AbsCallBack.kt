@@ -1,14 +1,12 @@
 package io.legado.app.lib.cronet
 
 import androidx.annotation.Keep
-import io.legado.app.help.coroutine.Coroutine
 import io.legado.app.help.http.CookieManager
 import io.legado.app.help.http.CookieManager.cookieJarHeader
 import io.legado.app.help.http.okHttpClient
 import io.legado.app.utils.DebugLog
 import io.legado.app.utils.asIOException
 import io.legado.app.utils.splitNotBlank
-import kotlinx.coroutines.delay
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.EventListener
@@ -19,8 +17,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.asResponseBody
-import okhttp3.internal.http.HTTP_PERM_REDIRECT
-import okhttp3.internal.http.HTTP_TEMP_REDIRECT
 import okhttp3.internal.http.HttpMethod
 import okio.Buffer
 import okio.Source
@@ -54,7 +50,6 @@ abstract class AbsCallBack(
     private val canceled = AtomicBoolean(false)
     private val callbackResults = ArrayBlockingQueue<CallbackResult>(2)
     private val urlResponseInfoChain = arrayListOf<UrlResponseInfo>()
-    private var cancelJob: Coroutine<*>? = null
     private var followRedirect = false
     private var enableCookieJar = false
     private var redirectRequest: Request? = null
@@ -73,6 +68,17 @@ abstract class AbsCallBack(
 
     @Throws(IOException::class)
     abstract fun waitForDone(urlRequest: UrlRequest): Response
+
+    protected fun startRequest(urlRequest: UrlRequest) {
+        request = urlRequest
+        CronetRequestRegistry.bind(mCall, urlRequest)
+        urlRequest.start()
+    }
+
+    private fun clearRequest(urlRequest: UrlRequest?) {
+        CronetRequestRegistry.clear(mCall, urlRequest)
+        if (request === urlRequest) request = null
+    }
 
     /**
      * 当发生错误时，通知子类终止阻塞抛出错误
@@ -140,7 +146,7 @@ abstract class AbsCallBack(
             response = toResponse(originalRequest, info, urlResponseInfoChain, CronetBodySource())
         } catch (e: IOException) {
             request.cancel()
-            cancelJob?.cancel()
+            clearRequest(request)
             onError(e)
             return
         }
@@ -173,13 +179,13 @@ abstract class AbsCallBack(
         info: UrlResponseInfo,
         byteBuffer: ByteBuffer
     ) {
-        callbackResults.add(CallbackResult(CallbackStep.ON_READ_COMPLETED, byteBuffer))
+        callbackResults.add(CallbackResult(CallbackStep.ON_READ_COMPLETED))
     }
 
 
     override fun onSucceeded(request: UrlRequest, info: UrlResponseInfo) {
         callbackResults.add(CallbackResult(CallbackStep.ON_SUCCESS))
-        cancelJob?.cancel()
+        clearRequest(request)
         eventListener?.responseBodyEnd(mCall, info.receivedByteCount)
         //DebugLog.i(javaClass.simpleName, "end[${info.negotiatedProtocol}]${info.url}")
 
@@ -189,8 +195,8 @@ abstract class AbsCallBack(
 
     //UrlResponseInfo可能为null
     override fun onFailed(request: UrlRequest, info: UrlResponseInfo?, error: CronetException) {
-        callbackResults.add(CallbackResult(CallbackStep.ON_FAILED, null, error))
-        cancelJob?.cancel()
+        callbackResults.add(CallbackResult(CallbackStep.ON_FAILED, error))
+        clearRequest(request)
         DebugLog.e(javaClass.name, error.message.toString())
         onError(error.asIOException())
         eventListener?.callFailed(mCall, error)
@@ -198,31 +204,23 @@ abstract class AbsCallBack(
     }
 
     override fun onCanceled(request: UrlRequest?, info: UrlResponseInfo?) {
+        clearRequest(request)
         if (followRedirect) {
             followRedirect = false
-            if (enableCookieJar) {
+            val nextRequest = if (enableCookieJar) {
                 val newRequest = CookieManager.loadRequest(redirectRequest!!)
-                buildRequest(newRequest, this)?.start()
+                buildRequest(newRequest, this)
             } else {
-                buildRequest(redirectRequest!!, this)?.start()
+                buildRequest(redirectRequest!!, this)
             }
+            nextRequest?.let(::startRequest)
             return
         }
         canceled.set(true)
         callbackResults.add(CallbackResult(CallbackStep.ON_CANCELED))
-        cancelJob?.cancel()
         //DebugLog.i(javaClass.simpleName, "cancel[${info?.negotiatedProtocol}]${info?.url}")
         eventListener?.callEnd(mCall)
         onError(IOException("Cronet Request Canceled"))
-    }
-
-    fun startCheckCancelJob(request: UrlRequest) {
-        cancelJob = Coroutine.async {
-            while (!mCall.isCanceled()) {
-                delay(1000)
-            }
-            request.cancel()
-        }
     }
 
     init {
@@ -393,22 +391,13 @@ abstract class AbsCallBack(
             val requestBuilder = userResponse.request.newBuilder()
             if (HttpMethod.permitsRequestBody(method)) {
                 val responseCode = userResponse.code
-                val maintainBody = HttpMethod.redirectsWithBody(method) ||
-                        responseCode == HTTP_PERM_REDIRECT ||
-                        responseCode == HTTP_TEMP_REDIRECT
-                if (HttpMethod.redirectsToGet(method)
-                    && responseCode != HTTP_PERM_REDIRECT
-                    && responseCode != HTTP_TEMP_REDIRECT
-                ) {
+                if (HttpMethod.redirectsToGet(method, responseCode)) {
                     requestBuilder.method("GET", null)
-                } else {
-                    val requestBody = if (maintainBody) userResponse.request.body else null
-                    requestBuilder.method(method, requestBody)
-                }
-                if (!maintainBody) {
                     requestBuilder.removeHeader("Transfer-Encoding")
                     requestBuilder.removeHeader("Content-Length")
                     requestBuilder.removeHeader("Content-Type")
+                } else {
+                    requestBuilder.method(method, userResponse.request.body)
                 }
             }
 
@@ -437,17 +426,18 @@ abstract class AbsCallBack(
         private val timeout = readTimeoutMillis.toLong()
 
         override fun close() {
-            cancelJob?.cancel()
             if (closed) {
                 return
             }
             closed = true
             if (!finished.get()) {
-                request?.cancel()
+                request?.let {
+                    clearRequest(it)
+                    it.cancel()
+                }
             }
         }
 
-        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         override fun read(sink: Buffer, byteCount: Long): Long {
             if (canceled.get()) {
                 throw IOException("Cronet Request Canceled")
@@ -460,9 +450,32 @@ abstract class AbsCallBack(
                 return -1
             }
 
-            if (byteCount < buffer.limit()) {
-                buffer.limit(byteCount.toInt())
+            if (byteCount == 0L) {
+                return 0
             }
+
+            if (buffer.position() == 0) {
+                if (!fillBuffer()) {
+                    return -1
+                }
+                buffer.flip()
+                check(buffer.hasRemaining()) { "Buffer should have remaining bytes flip" }
+            }
+
+            val bytesWritten = copyByteBufferToOkioBuffer(buffer, sink, byteCount)
+            check(bytesWritten > 0) { "Bytes written should be positive" }
+
+            if (!buffer.hasRemaining()) {
+                buffer.clear()
+            }
+
+            return bytesWritten.toLong()
+        }
+
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        private fun fillBuffer(): Boolean {
+            check(buffer.position() == 0) { "Buffer position is not 0" }
+            check(buffer.limit() == buffer.capacity()) { "Buffer limit is not capacity" }
 
             request?.read(buffer)
 
@@ -482,7 +495,7 @@ abstract class AbsCallBack(
                 CallbackStep.ON_SUCCESS -> {
                     finished.set(true)
                     buffer = null
-                    -1
+                    false
                 }
 
                 CallbackStep.ON_CANCELED -> {
@@ -491,12 +504,25 @@ abstract class AbsCallBack(
                 }
 
                 CallbackStep.ON_READ_COMPLETED -> {
-                    result.buffer!!.flip()
-                    val bytesWritten = sink.write(result.buffer)
-                    result.buffer.clear()
-                    bytesWritten.toLong()
+                    true
                 }
             }
+        }
+
+        private fun copyByteBufferToOkioBuffer(from: ByteBuffer, to: Buffer, byteCount: Long): Int {
+            val bytesWritten: Int
+            if (from.remaining() <= byteCount) {
+                bytesWritten = to.write(from)
+            } else {
+                val originalLimit = from.limit()
+                try {
+                    from.limit(from.position() + byteCount.toInt())
+                    bytesWritten = to.write(from)
+                } finally {
+                    from.limit(originalLimit)
+                }
+            }
+            return bytesWritten
         }
 
         override fun timeout(): Timeout {

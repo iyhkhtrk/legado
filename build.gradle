@@ -2,7 +2,8 @@
 
 buildscript {
     ext{
-        compile_sdk_version = 36
+        compile_sdk_version = 37
+        compile_sdk_minor_version = 2
 //        build_tool_version = '34.0.0'
 //        kotlin_version = '1.9.22'
 //        ksp_version = "1.0.17"

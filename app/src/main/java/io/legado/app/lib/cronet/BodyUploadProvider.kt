@@ -53,7 +53,7 @@ class BodyUploadProvider(private val body: RequestBody) : UploadDataProvider(), 
 
     @Throws(IOException::class)
     override fun rewind(uploadDataSink: UploadDataSink) {
-        check(body.isOneShot()) { "Okhttp RequestBody is oneShot" }
+        check(!body.isOneShot()) { "Okhttp RequestBody is oneShot" }
         filled = false
         fillBuffer()
         uploadDataSink.onRewindSucceeded()
