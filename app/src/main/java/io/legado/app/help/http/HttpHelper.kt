@@ -6,7 +6,6 @@ import io.legado.app.help.config.AppConfig
 import io.legado.app.help.glide.progress.ProgressManager.LISTENER
 import io.legado.app.help.glide.progress.ProgressResponseBody
 import io.legado.app.help.http.CookieManager.cookieJarHeader
-import io.legado.app.lib.cronet.CronetCancelEventListener
 import io.legado.app.model.ReadManga
 import io.legado.app.utils.NetworkUtils
 import okhttp3.ConnectionSpec
@@ -59,7 +58,7 @@ val okHttpClient: OkHttpClient by lazy {
         .connectTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
-        .callTimeout(60, TimeUnit.SECONDS)
+        .callTimeout(90, TimeUnit.SECONDS)
         //.cookieJar(cookieJar = cookieJar)
         .sslSocketFactory(SSLHelper.unsafeSSLSocketFactory, SSLHelper.unsafeTrustManager)
         .retryOnConnectionFailure(true)
@@ -67,7 +66,6 @@ val okHttpClient: OkHttpClient by lazy {
         .connectionSpecs(specs)
         .followRedirects(true)
         .followSslRedirects(true)
-        .eventListener(CronetCancelEventListener)
         .addInterceptor(OkHttpExceptionInterceptor)
         .addInterceptor { chain ->
             val request = chain.request()
@@ -77,8 +75,6 @@ val okHttpClient: OkHttpClient by lazy {
             } else if (request.header(AppConst.UA_NAME) == "null") {
                 builder.removeHeader(AppConst.UA_NAME)
             }
-            builder.addHeader("Keep-Alive", "300")
-            builder.addHeader("Connection", "Keep-Alive")
             builder.addHeader("Cache-Control", "no-cache")
             chain.proceed(builder.build())
         }
@@ -99,13 +95,6 @@ val okHttpClient: OkHttpClient by lazy {
             }
             networkResponse
         }
-    if (AppConfig.isCronet) {
-        // if (Cronet.loader?.install() == true) {
-            Cronet.interceptor?.let {
-                builder.addInterceptor(it)
-            }
-        // }
-    }
     builder.addInterceptor(DecompressInterceptor)
     builder.build().apply {
         val okHttpName =
