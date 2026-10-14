@@ -2,7 +2,6 @@ package io.legado.app.help.http
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import io.legado.app.help.config.AppConfig
 import io.legado.app.help.http.CookieManager.cookieJarHeader
 import io.legado.app.help.http.SSLHelper.unsafeTrustManager
 import okhttp3.Call
@@ -376,6 +375,7 @@ class ObsoleteUrlFactory(private var client: OkHttpClient) : URLStreamHandlerFac
             val clientBuilder: OkHttpClient.Builder = client.newBuilder()
             clientBuilder.interceptors().clear()
             clientBuilder.interceptors().add(UnexpectedException.INTERCEPTOR)
+            clientBuilder.interceptors().add(DecompressInterceptor)
 
             clientBuilder.networkInterceptors().clear()
             clientBuilder.networkInterceptors().add(networkInterceptor)
@@ -395,13 +395,6 @@ class ObsoleteUrlFactory(private var client: OkHttpClient) : URLStreamHandlerFac
                     CookieManager.saveResponse(networkResponse)
                 }
                 networkResponse
-            }
-            if (AppConfig.isCronet) {
-                // if (Cronet.loader?.install() == true) {
-                    Cronet.interceptor?.let {
-                        clientBuilder.addInterceptor(it)
-                    }
-                // }
             }
 
             // Use a separate dispatcher so that limits aren't impacted. But use the same executor service!

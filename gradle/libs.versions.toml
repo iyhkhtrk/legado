@@ -1,6 +1,6 @@
 [versions]
 
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 ksp = "2.3.12"
 agp = "9.4.1"
 appcompat = "1.8.0"
@@ -31,13 +31,13 @@ desugar = "2.1.5"
 
 #kotlinxSerialization = "1.8.0"
 swiperefreshlayout = "1.2.0"
-collection = "1.6.0"
+collection = "1.7.0"
 
 zxingLite = "3.5.0"
 
 #不要更新版本
 #noinspection NewerVersionAvailable
-hutool = "5.8.47"
+hutool = "5.8.48"
 
 # issue #3811，不要更新版本，新版引入了一个破坏性变更（详见https://github.com/jhy/jsoup/pull/2017）
 # 若要升级请确保相关代码不会受此变更影响（如AnalyzeByJSoup.kt、JsoupXpath库等）
@@ -125,6 +125,7 @@ preference-preference = { module = "androidx.preference:preference", version.ref
 preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+conscrypt-android = { module = "org.conscrypt:conscrypt-android", version = "2.7.0" }
 
 quick-chinese-transfer-core = { module = "com.github.liuyueyi.quick-chinese-transfer:quick-transfer-core", version.ref = "quickChineseTransfer" }
 
