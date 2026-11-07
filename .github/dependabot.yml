@@ -8,19 +8,13 @@ registries:
   maven-google:
     type: maven-repository
     # url: https://maven.google.com
-    url: https://dl.google.com/dl/android/maven2/
-    password: dummy
-    username: dummy
-  maven-central:
+    url: "https://dl.google.com/dl/android/maven2/"
+  gradle-plugin:
     type: maven-repository
-    url: https://repo1.maven.org/maven2/
-    password: dummy
-    username: dummy
+    url: "https://plugins.gradle.org/m2/"
   maven-jitpack:
     type: maven-repository
-    url: https://jitpack.io
-    password: dummy
-    username: dummy
+    url: "https://jitpack.io"
 
 updates:
   - package-ecosystem: gradle
