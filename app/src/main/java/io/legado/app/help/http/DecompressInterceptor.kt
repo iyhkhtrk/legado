@@ -6,10 +6,10 @@ import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okhttp3.internal.http.promisesBody
 import okio.buffer
+import okio.gzip
+import okio.inflate
 import okio.source
-import java.util.zip.GZIPInputStream
 import java.util.zip.Inflater
-import java.util.zip.InflaterInputStream
 
 object DecompressInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -31,15 +31,15 @@ object DecompressInterceptor : Interceptor {
 
         val encoding = response.header("Content-Encoding")?.lowercase()
         val source = when (encoding) {
-            "gzip" -> GZIPInputStream(body.byteStream()).source().buffer()
-            "deflate" -> InflaterInputStream(body.byteStream(), Inflater(true)).source().buffer()
+            "gzip" -> body.source().gzip()
+            "deflate" -> body.source().inflate(Inflater(true))
             else -> return response
         }
 
         return response.newBuilder()
             .removeHeader("Content-Encoding")
             .removeHeader("Content-Length")
-            .body(source.asResponseBody(body.contentType(), -1))
+            .body(source.buffer().asResponseBody(body.contentType(), -1))
             .build()
     }
 }
